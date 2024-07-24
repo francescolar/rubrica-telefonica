@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Rubrica | Sign in</title>
+<script type="text/javascript"></script>
+</head>
+<body>
+    <div th:if="${ex}">Utente già registrato</div>
+    <form action="#" th:action="@{/register}" th:object="${users}" method="post">
+        <table>
+            <tr>
+                <td>User:</td>
+                <td><input type="text" th:field="*{username}" /></td>
+                <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td><input type="password" th:field="*{password}" /></td>
+                <td th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Surname Error</td>
+            </tr>
+            <tr>
+                <td>Name:</td>
+                <td><input type="text" th:field="*{fname}" /></td>
+            </tr>
+            <tr>
+                <td>Surname:</td>
+                <td><input type="text" th:field="*{lname}" /></td>
+            </tr>
+            <tr>
+                <td><button type="submit">Submit</button></td>
+            </tr>
+        </table>
+    </form>
+    <td>
+        <a href="/homepage">Home</a>
+    </td>
+    <td>
+        <a href="/createcontact">Create new contact</a>
+    </td>
+
+</body>
+</html>

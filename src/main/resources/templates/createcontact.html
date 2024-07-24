@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Rubrica | Aggiungi contatto</title>
+<script type="text/javascript"></script>
+</head>
+<body>
+    <form action="#" th:action="@{/createcontact}" th:object="${contacts}" method="post">
+        <table>
+            <tr>
+                <td>Name:</td>
+                <td><input type="text" th:field="*{fname}" /></td>
+                <td th:if="${#fields.hasErrors('fname')}" th:errors="*{fname}">Name Error</td>
+            </tr>
+            <tr>
+                <td>Surname:</td>
+                <td><input type="text" th:field="*{lname}" /></td>
+                <td th:if="${#fields.hasErrors('lname')}" th:errors="*{lname}">Surname Error</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td><input type="text" th:field="*{email}" /></td>
+            </tr>
+            <tr>
+                <td>Cellphone number:</td>
+                <td><input type="text" th:field="*{tel}" /></td>
+            </tr>
+            <tr>
+                <td><button type="submit">Submit</button></td>
+            </tr>
+        </table>
+    </form>
+    <td>
+        <a href="/homepage">Home</a>
+    </td>
+</body>
+</html>

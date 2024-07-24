@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rubrica | Lista contatti</title>
+<script type="text/javascript"></script>
+</head>
+<body>
+    <h1>Lista contatti</h1>
+    <div th:each="contact : ${contacts}">
+        <tr th:text="${contact.fname}"></tr>
+        <tr th:text="${contact.lname}"></tr>
+        <tr th:text="${contact.email}"></tr>
+        <tr th:text="${contact.tel}"></tr>
+        <tr>    
+            <form action="/editcontact" method="get">
+                <input type="hidden" name="id" th:value="${contact.id}">
+                <input type="submit" value="Modifica">
+            </form>
+        </tr>
+    </div>
+
+    <a href="/homepage">Home</a>
+</body>
+</html>
