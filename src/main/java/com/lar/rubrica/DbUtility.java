@@ -19,7 +19,6 @@ public class DbUtility {
         Dotenv dotenv = Dotenv.load();
         String password_db = dotenv.get("PASSWORD_DB");
         String username = dotenv.get("USERNAME_DB");
-        System.out.println(password_db);
         Class.forName("org.postgresql.Driver");
         c = DriverManager
                 .getConnection("jdbc:postgresql://localhost:5432/rubrica",
