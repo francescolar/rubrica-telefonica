@@ -1,0 +1,20 @@
+CREATE TABLE users(
+    id SERIAL NOT NULL,
+    password varchar(200) NOT NULL,
+    fname varchar(30),
+    lname varchar(30),
+    username varchar(30) NOT NULL,
+    salt varchar(255) NOT NULL,
+    PRIMARY KEY(id)
+);
+
+
+CREATE TABLE contacts(
+    id SERIAL NOT NULL,
+    fname varchar(30),
+    lname varchar(30),
+    email varchar(50),
+    tel varchar(15),
+    ownerid integer,
+    PRIMARY KEY(id)
+);
