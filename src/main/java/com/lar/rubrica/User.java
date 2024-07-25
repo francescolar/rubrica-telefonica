@@ -1,9 +1,13 @@
 package com.lar.rubrica;
 
+import java.util.Collection;
+
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class Users {
+public class User {
     @NotNull
     private int id;
 
@@ -24,7 +28,7 @@ public class Users {
     private String salt;
 
 
-    public Users(@NotNull @Size(min = 2, max = 30) String username, @NotNull @Size(min = 2, max = 200) String password,
+    public User(@NotNull @Size(min = 2, max = 30) String username, @NotNull @Size(min = 2, max = 200) String password,
             String fname, String lname) {
         this.username = username;
         this.password = password;
@@ -34,14 +38,14 @@ public class Users {
 
     @Override
     public String toString() {
-        return "Users [id=" + id + ", username=" + username + ", password=" + password + ", fname=" + fname + ", lname="
+        return "User [id=" + id + ", username=" + username + ", password=" + password + ", fname=" + fname + ", lname="
                 + lname + ", salt=" + salt + "]";
     }
 
-    public Users() {
+    public User() {
     }
 
-    public Users(String username, String password, String fname, String lname, String salt) {
+    public User(String username, String password, String fname, String lname, String salt) {
         this.username = username;
         this.password = password;
         this.fname = fname;
@@ -49,7 +53,7 @@ public class Users {
         this.salt = salt;
     }
 
-    public Users(int id, String username, String password, String fname, String lname, String salt) {
+    public User(int id, String username, String password, String fname, String lname, String salt) {
         this.id = id;
         this.username = username;
         this.password = password;

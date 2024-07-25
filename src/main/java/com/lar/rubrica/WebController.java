@@ -35,12 +35,12 @@ public class WebController implements WebMvcConfigurer {
 
     @GetMapping("/login")
     public String showForm(Model model) {
-        model.addAttribute("users", new Users());
+        model.addAttribute("user", new User());
         return "login";
     }
 
     @PostMapping("/login")
-    public String checkPersonInfo(@Valid @ModelAttribute Users user, Model model, BindingResult bindingResult) {
+    public String checkPersonInfo(@Valid @ModelAttribute User user, Model model, BindingResult bindingResult) {
 
         boolean userRegistered = false;
         if (bindingResult.hasErrors()) {
@@ -48,9 +48,9 @@ public class WebController implements WebMvcConfigurer {
         }
         try {
             Connection c = DbUtility.createConnection();
-            List<Users> list = DbUtility.viewUsers(c);
+            List<User> list = DbUtility.viewUser(c);
             DbUtility.closeConnection(c);
-            for (Users elem : list) {
+            for (User elem : list) {
 
                 if (elem.getUsername().equals(user.getUsername()) && CryptoPassword
                         .cryptoPasswordwithSalt(user.getPassword(), elem.getSalt()).equals(elem.getPassword())) {
@@ -67,7 +67,7 @@ public class WebController implements WebMvcConfigurer {
         model.addAttribute("registered", userRegistered);
 
         if (userRegistered) {
-            model.addAttribute("users", user);
+            model.addAttribute("user", user);
             return "success";
         } else
             return "login";
@@ -77,13 +77,13 @@ public class WebController implements WebMvcConfigurer {
     
     @GetMapping("/createcontact")
     public String createContactPage(Model model) {
-        model.addAttribute("users", new Users());
-        model.addAttribute("contacts", new Contacts());
+        model.addAttribute("user", new User());
+        model.addAttribute("contact", new Contact());
         return "createcontact";
     }
 
     @PostMapping("/createcontact")
-    public String createContact(@ModelAttribute Users user, @Valid @ModelAttribute Contacts contact, Model model, BindingResult bindingResult) {
+    public String createContact(@ModelAttribute User user, @Valid @ModelAttribute Contact contact, Model model, BindingResult bindingResult) {
         
         boolean contactRegistered = false;
         if (bindingResult.hasErrors()) {
@@ -105,7 +105,7 @@ public class WebController implements WebMvcConfigurer {
         model.addAttribute("registered", contactRegistered);
 
         if (contactRegistered) {
-            model.addAttribute("contacts", contact);
+            model.addAttribute("contact", contact);
             return "success";
         } else
             model.addAttribute("ex", !contactRegistered);
@@ -114,12 +114,12 @@ public class WebController implements WebMvcConfigurer {
 
     @GetMapping("/register")
     public String showForm2(Model model) {
-        model.addAttribute("users", new Users());
+        model.addAttribute("user", new User());
         return "register";
     }
 
     @PostMapping("/register")
-    public String checkPersonInfo2(@Valid @ModelAttribute Users user, Model model, BindingResult bindingResult) {
+    public String checkPersonInfo2(@Valid @ModelAttribute User user, Model model, BindingResult bindingResult) {
 
         boolean registrazioneEffettuata = true;
         if (bindingResult.hasErrors()) {
@@ -150,7 +150,7 @@ public class WebController implements WebMvcConfigurer {
         }
 
         if (registrazioneEffettuata) {
-            model.addAttribute("users", user);
+            model.addAttribute("user", user);
             return "success";
         } else
             model.addAttribute("ex", !registrazioneEffettuata);
@@ -162,9 +162,9 @@ public class WebController implements WebMvcConfigurer {
 	public String viewUser(Model model) {
 		try {
 			Connection c = DbUtility.createConnection();
-			List<Contacts> list = DbUtility.viewContacts(c, -1);
+			List<Contact> list = DbUtility.viewContact(c, -1);
 			DbUtility.closeConnection(c);
-			model.addAttribute("contacts", list);
+			model.addAttribute("contact", list);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -175,8 +175,8 @@ public class WebController implements WebMvcConfigurer {
     public String editcontact(@RequestParam("id") Integer contactId,Model model) {
         try {
             Connection c = DbUtility.createConnection();
-            Contacts contact = DbUtility.viewContacts(c, contactId).get(0);
-            model.addAttribute("contacts", contact);
+            Contact contact = DbUtility.viewContact(c, contactId).get(0);
+            model.addAttribute("contact", contact);
             DbUtility.closeConnection(c);
             return "editcontact";
         } catch (Exception e) {
@@ -186,7 +186,7 @@ public class WebController implements WebMvcConfigurer {
     }
 
     @PostMapping("/editcontact")
-    public String editContactSave(@Valid @ModelAttribute Contacts contact, Model model, BindingResult bindingResult) {
+    public String editContactSave(@Valid @ModelAttribute Contact contact, Model model, BindingResult bindingResult) {
         
         if (bindingResult.hasErrors()) {
             return "login";

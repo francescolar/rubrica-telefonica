@@ -31,11 +31,11 @@ public class DbUtility {
         connection.close();
     }
 
-    public static List<Users> viewUsers(Connection connection) throws SQLException {
+    public static List<User> viewUser(Connection connection) throws SQLException {
 
         Statement stmt = connection.createStatement();
-        String sql = "SELECT * FROM users LIMIT 100";
-        List<Users> listUser = new LinkedList<>();
+        String sql = "SELECT * FROM user LIMIT 100";
+        List<User> listUser = new LinkedList<>();
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
             String username = rs.getString("username");
@@ -43,7 +43,7 @@ public class DbUtility {
             String salt = rs.getString("salt");
             String fname = rs.getString("fname");
             String lname = rs.getString("lname");
-            Users user = new Users(username, password, fname, lname);
+            User user = new User(username, password, fname, lname);
             user.setSalt(salt);
             listUser.add(user);
         }
@@ -54,7 +54,7 @@ public class DbUtility {
 
     public static void insertUserPreparedStatement(Connection connection, String username, String password, String salt,
             String fname, String lname) throws SQLException {
-        String sql = "INSERT INTO users(password,fname,lname,username,salt) VALUES( ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO user(password,fname,lname,username,salt) VALUES( ?, ?, ?, ?, ?);";
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, password);
         stmt.setString(2, fname);
@@ -68,7 +68,7 @@ public class DbUtility {
 
     public static void insertContactPreparedStatement(Connection c, String fname, String lname, String email,
             String tel) throws SQLException {
-        String sql = "INSERT INTO contacts(fname, lname, email, tel) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO contact(fname, lname, email, tel) VALUES (?, ?, ?, ?);";
         PreparedStatement stmt = c.prepareStatement(sql);
         stmt.setString(1, fname);
         stmt.setString(2, lname);
@@ -86,7 +86,7 @@ WHERE brand = 'Volvo';
 
     public static void updateContactPreparedStatement(Connection c, String id, String fname, String lname, String email,
             String tel) throws SQLException {
-        String sql = "UPDATE contacts SET fname = ?, lname = ?, email = ?, tel = ? WHERE id = " + id + ";";
+        String sql = "UPDATE contact SET fname = ?, lname = ?, email = ?, tel = ? WHERE id = " + id + ";";
         PreparedStatement stmt = c.prepareStatement(sql);
         stmt.setString(1, fname);
         stmt.setString(2, lname);
@@ -99,7 +99,7 @@ WHERE brand = 'Volvo';
     public static boolean checkUsername(Connection c, String username) throws SQLException {
         Statement stmt = c.createStatement();
         System.out.println("prova");
-        String sql = "SELECT * FROM users WHERE username = '" + username + "';";
+        String sql = "SELECT * FROM user WHERE username = '" + username + "';";
         ResultSet rs = stmt.executeQuery(sql);
         if (rs.next()) {
             rs.close();
@@ -114,15 +114,15 @@ WHERE brand = 'Volvo';
 
 
 
-    public static List<Contacts> viewContacts(Connection c, int contactId) throws SQLException, ClassNotFoundException {
+    public static List<Contact> viewContact(Connection c, int contactId) throws SQLException, ClassNotFoundException {
         Statement stmt = c.createStatement();
         String sql = "";
         if (contactId == -1) {
-            sql = "SELECT * FROM contacts ORDER BY fname ASC;";
+            sql = "SELECT * FROM contact ORDER BY fname ASC;";
         } else {
-            sql = "SELECT * FROM contacts WHERE id = " + contactId + ";";
+            sql = "SELECT * FROM contact WHERE id = " + contactId + ";";
         }
-        List<Contacts> listContact = new LinkedList<>();
+        List<Contact> listContact = new LinkedList<>();
         ResultSet rs = stmt.executeQuery(sql);
         while ( rs.next() ) {
             int id = parseInt(rs.getString("id"));
@@ -130,7 +130,7 @@ WHERE brand = 'Volvo';
             String  lname = rs.getString("lname");
             String  email = rs.getString("email");
             String  tel = rs.getString("tel");
-            Contacts contact = new Contacts(id, fname, lname, email, tel);
+            Contact contact = new Contact(id, fname, lname, email, tel);
             listContact.add(contact);
         }
         rs.close();

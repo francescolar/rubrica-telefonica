@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Lista contatti</h1>
-    <div th:each="contact : ${contacts}">
+    <div th:each="contact : ${contact}">
         <tr th:text="${contact.fname}"></tr>
         <tr th:text="${contact.lname}"></tr>
         <tr th:text="${contact.email}"></tr>

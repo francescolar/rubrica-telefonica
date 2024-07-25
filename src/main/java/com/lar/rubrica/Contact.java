@@ -3,7 +3,7 @@ package com.lar.rubrica;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class Contacts {
+public class Contact {
 
     @NotNull
     private int id;
@@ -23,7 +23,7 @@ public class Contacts {
     @NotNull
     private int ownerId;
 
-    public Contacts(@Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
+    public Contact(@Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
             @Size(min = 2, max = 50) String email, @Size(min = 5, max = 15) String tel) {
         this.fname = fname;
         this.lname = lname;
@@ -33,7 +33,7 @@ public class Contacts {
 
 
 
-    public Contacts(@Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
+    public Contact(@Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
             @Size(min = 2, max = 50) String email, @Size(min = 10, max = 10) String tel, @NotNull int ownerId) {
         this.fname = fname;
         this.lname = lname;
@@ -44,10 +44,10 @@ public class Contacts {
 
 
 
-    public Contacts() {
+    public Contact() {
     }
 
-    public Contacts(String email, String fname, int id, String lname, int ownerId, String tel) {
+    public Contact(String email, String fname, int id, String lname, int ownerId, String tel) {
         this.email = email;
         this.fname = fname;
         this.id = id;
@@ -56,7 +56,7 @@ public class Contacts {
         this.tel = tel;
     }
 
-    public Contacts(int id, String fname, String lname, String email, String tel) {
+    public Contact(int id, String fname, String lname, String email, String tel) {
         this.id = id;
         this.fname = fname;
         this.lname = lname;
@@ -154,7 +154,7 @@ public class Contacts {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Contacts{");
+        sb.append("Contact{");
         sb.append("id=").append(id);
         sb.append(", fname=").append(fname);
         sb.append(", lname=").append(lname);

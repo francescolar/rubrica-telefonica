@@ -7,7 +7,7 @@
 </head>
 <body>
     <div th:if="${ex}">Utente già registrato</div>
-    <form action="#" th:action="@{/register}" th:object="${users}" method="post">
+    <form action="#" th:action="@{/register}" th:object="${user}" method="post">
         <table>
             <tr>
                 <td>User:</td>
