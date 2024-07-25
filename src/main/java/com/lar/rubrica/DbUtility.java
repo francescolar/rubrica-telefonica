@@ -34,7 +34,7 @@ public class DbUtility {
     public static List<User> viewUser(Connection connection) throws SQLException {
 
         Statement stmt = connection.createStatement();
-        String sql = "SELECT * FROM user LIMIT 100";
+        String sql = "SELECT * FROM \"user\" LIMIT 100";
         List<User> listUser = new LinkedList<>();
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
@@ -98,8 +98,7 @@ WHERE brand = 'Volvo';
 
     public static boolean checkUsername(Connection c, String username) throws SQLException {
         Statement stmt = c.createStatement();
-        System.out.println("prova");
-        String sql = "SELECT * FROM user WHERE username = '" + username + "';";
+        String sql = "SELECT * FROM \"user\" WHERE username = '" + username + "';";
         ResultSet rs = stmt.executeQuery(sql);
         if (rs.next()) {
             rs.close();
