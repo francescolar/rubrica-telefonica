@@ -1,4 +1,4 @@
-package com.lar.rubrica;
+package com.lar.rubrica.util;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 

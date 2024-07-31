@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Rubrica | Modifica contatto</title>
-<script type="text/javascript"></script>
+    <meta charset="UTF-8">
+    <title>Rubrica | Modifica contatto</title>
+    <link id="theme-stylesheet" rel="stylesheet" type="text/css" href="/css/style-light.css" />
+    <script src="/js/theme-toggle.js" type="text/javascript" defer></script>
 </head>
 <body>
+    <div th:replace="~{fragments/header :: header}"></div>
     <form action="#" th:action="@{/editcontact}" th:object="${contact}" method="post">
         <table>
             <tr>

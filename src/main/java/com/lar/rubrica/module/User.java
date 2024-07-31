@@ -1,8 +1,4 @@
-package com.lar.rubrica;
-
-import java.util.Collection;
-
-import org.springframework.security.core.userdetails.UserDetails;
+package com.lar.rubrica.module;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -27,6 +23,14 @@ public class User {
 
     private String salt;
 
+
+    public User(@NotNull int id, @NotNull @Size(min = 2, max = 30) String username,
+            @Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname) {
+        this.id = id;
+        this.username = username;
+        this.fname = fname;
+        this.lname = lname;
+    }
 
     public User(@NotNull @Size(min = 2, max = 30) String username, @NotNull @Size(min = 2, max = 200) String password,
             String fname, String lname) {

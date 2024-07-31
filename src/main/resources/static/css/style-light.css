@@ -1,0 +1,117 @@
+html {
+  background-color: #e8d6d2;
+}
+
+::-webkit-scrollbar-track {
+background-color: rgba(0,0,0,0);
+}
+
+::-webkit-scrollbar-thumb {
+background-color: #392e2b;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+background-color: #85736e;
+}
+
+*::-webkit-scrollbar-thumb:active {
+background-color: #f5e1a7;
+}
+
+header {
+color: #8f4c38;
+}
+
+.header-nav {
+background-color: #ffdbd1;
+box-shadow: 0px 0px 10px #a08c87;
+}
+
+.header-nav-container a {
+color: #2c150f;
+}
+
+.material-symbols-rounded { 
+filter: drop-shadow(2px 2px 5px rgba(133, 115, 110, 1));
+}
+
+.material-symbols-rounded:hover {
+color: #d8c2bc;
+}
+
+.hovering-button-titles {
+background-color: #f5e1a7;
+color: #231b00;
+box-shadow: 0px 0px 3px #a08c87;
+}
+
+main {
+color: #77574e;
+}
+
+.login-container {
+background-color: #ffdbd1;
+box-shadow: 0px 0px 3px #a08c87;
+color: #2c150f;
+}
+
+.login-container input:hover {
+background-color: #fff1ed;
+}
+
+.login-container input:focus {
+background-color: #e8d6d2;
+
+}
+.login-container input {
+background-color: #fff8f6;
+color: #77574e;
+box-shadow: 0px 0px 3px #a08c87;
+}
+
+.login-container input.text-field {
+border-bottom: 2px solid #85736e;
+}
+
+.login-container .login-button {
+background-color: #f5e1a7;
+color: #231b00;
+}
+
+.tooltiptext {
+background-color: #f5e1a7;
+color: #231b00;
+box-shadow: 0px 0px 3px #a08c87;
+}
+
+.tooltiptext.error {
+border: 1px solid #ba1a1a;
+background-color: #ffdad6;
+color: #410002;
+}
+
+.error-message {
+  color: #ba1a1a;
+}
+
+.profile-image {
+  background-color: #392e2b;
+  color: #ffede8;
+  box-shadow: 0px 0px 3px #423734;
+}
+
+.edit-button {
+border: 0.01em solid #231b00;
+background-color: rgba(0,0,0,0);
+color: #231b00;
+transition: background-color 100ms ease-in-out;
+}
+
+.edit-button:hover {
+background-color: #cfb0a7;
+}
+
+.card-container {
+background-color: #ffdbd1;
+color: #3a0b01;
+}

@@ -1,0 +1,118 @@
+html {
+  background-color: #1a110f;
+}
+
+::-webkit-scrollbar-track {
+background-color: rgba(0,0,0,0);
+}
+
+::-webkit-scrollbar-thumb {
+background-color: #F1DFDA;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+background-color: #D8C2BC;
+}
+
+*::-webkit-scrollbar-thumb:active {
+background-color: #D8C58D;
+}
+
+header {
+color: #F1DFDA;
+}
+
+.header-nav {
+background-color: #322825;
+box-shadow: 0px 0px 10px #a08c87;
+}
+
+.header-nav-container a {
+color: #F1DFDA;
+}
+
+.material-symbols-rounded { 
+filter: drop-shadow(2px 2px 5px rgba(133, 115, 110, 1));
+}
+
+.material-symbols-rounded:hover {
+color: #d8c2bc;
+}
+
+.hovering-button-titles {
+background-color: #534619;
+color: #f5e1a7;
+box-shadow: 0px 0px 3px #a08c87;
+}
+main {
+color: #f1dfda;
+}
+
+.login-container {
+background-color: #5d4037;
+box-shadow: 0px 0px 3px #423734;
+color: #2c150f;
+}
+
+#show-password {
+color: #d8c58d;
+}
+
+.login-container input:hover {
+background-color: #1a110f;
+}
+
+.login-container input:focus {
+background-color: #1a110f;
+}
+.login-container input {
+background-color: #423734;
+color: #e7bdb2;
+box-shadow: 0px 0px 3px #423734;
+}
+
+.login-container input.text-field {
+border-bottom: 2px solid #d8c2bc;
+}
+
+.login-container .login-button {
+font-weight: normal;
+background-color: #534619;
+color: #f5e1a7;
+}
+
+.tooltip .tooltiptext {
+background-color: #534619;
+color: #f5e1a7;
+box-shadow: 0px 0px 3px #423734;
+}
+
+input::placeholder {
+color: #e7bdb2;
+}
+
+.error-message {
+color: #ffb4ab;
+}
+
+.profile-image {
+background-color: #5d4037;
+color: #ffdbd1;
+box-shadow: 0px 0px 3px #423734;
+}
+
+.edit-button {
+border: 0.01em solid #ffdbd1;
+background-color: rgba(0,0,0,0);
+color: #ffdbd1;
+transition: background-color 100ms ease-in-out;
+}
+
+.edit-button:hover {
+background-color: #a14e35;
+}
+
+.card-container {
+background-color: #723523;
+color: #ffdbd1;
+}

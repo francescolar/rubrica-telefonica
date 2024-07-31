@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Logout Success</title>
+    <link id="theme-stylesheet" rel="stylesheet" type="text/css" href="/css/style-light.css" />
+    <script src="/js/theme-toggle.js" type="text/javascript" defer></script>
+    <script>
+        // Funzione per il redirect automatico dopo un delay
+        function autoRedirect() {
+            setTimeout(function() {
+                window.location.href = "/homepage"; // URL di destinazione del redirect
+            }, 5000); // Delay in millisecondi (5000 ms = 5 secondi)
+        }
+
+        // Esegui la funzione al caricamento della pagina
+        window.onload = autoRedirect;
+    </script>
+    
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main>
+        <div sec:authorize="!isAuthenticated()">
+            <h1>Logout avvenuto con successo</h1>
+            <p>Sei stato disconnesso. Sarai reindirizzato alla <a th:href="@{/homepage}">pagina principale</a> tra pochi secondi.</p>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <h1>Login avvenuto con successo</h1>
+            <p>Sei connesso. Sarai reindirizzato alla <a th:href="@{/homepage}">pagina principale</a> tra pochi secondi.</p>
+        </div>
+    </main>
+</body>
+</html>

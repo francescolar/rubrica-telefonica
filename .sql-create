@@ -1,20 +1,36 @@
-CREATE TABLE users(
+CREATE TABLE "user"(
     id SERIAL NOT NULL,
     password varchar(200) NOT NULL,
     fname varchar(30),
     lname varchar(30),
-    username varchar(30) NOT NULL,
+    username varchar(30) NOT NULL UNIQUE,
     salt varchar(255) NOT NULL,
+    enabled boolean DEFAULT true,
     PRIMARY KEY(id)
 );
 
 
-CREATE TABLE contacts(
+CREATE TABLE "contact"(
     id SERIAL NOT NULL,
     fname varchar(30),
     lname varchar(30),
     email varchar(50),
     tel varchar(15),
     ownerid integer,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE authorities(
+    username varchar(50),
+    authority varchar(50),
+    CONSTRAINT authorities_username_fkey FOREIGN key(username) REFERENCES "user"(username)
+);
+
+CREATE TABLE contact_details(
+    id SERIAL NOT NULL,
+    contact_id integer,
+    initials varchar(2),
+    img_path varchar(100),
+    img_enabled boolean DEFAULT false,
     PRIMARY KEY(id)
 );

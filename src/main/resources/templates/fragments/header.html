@@ -1,0 +1,49 @@
+<header class="header">
+    <h1 class="title animatable slide-in-right">
+        <span class="word1">rubrica</span>
+        <span class="word2">telefonica</span>
+    </h1>
+    <nav class="header-nav animatable slide-in-left">
+        <span class="header-nav-container">
+            <a class="test" th:href="@{/homepage}">
+                <span class="material-symbols-rounded send-icon">home</span>
+                <span class="hovering-button-titles"><p>Home</p></span>
+            </a>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/login}">
+                <span class="material-symbols-rounded send-icon">login</span>
+                <span class="hovering-button-titles"><p>Login</p></span>
+            </a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/profile}">
+                <span class="material-symbols-rounded send-icon">account_circle</span>
+                <span class="hovering-button-titles"><p>Profile</p></span>
+            </a>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/register}">
+                <span class="material-symbols-rounded send-icon">app_registration</span>
+                <span class="hovering-button-titles"><p>Sign up</p></span>
+            </a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/createcontact}">
+                <span class="material-symbols-rounded send-icon">add_circle</span>
+                <span class="hovering-button-titles"><p>Create new contact</p></span>
+            </a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/view}">
+                <span class="material-symbols-rounded send-icon">import_contacts</span>
+                <span class="hovering-button-titles"><p>Contacts</p></span>
+            </a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">
+                <span class="material-symbols-rounded send-icon">admin_panel_settings</span>
+                <span class="hovering-button-titles"><p>Admin panel</p></span>
+            </a>
+            <a sec:authorize="isAuthenticated()" id="logout-button" th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <span class="material-symbols-rounded send-icon">logout</span>
+                <span class="hovering-button-titles"><p>Logout</p></span>
+            </a>
+            <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+            <a href="#" id="theme-toggle">
+                <span class="material-symbols-rounded send-icon">dark_mode</span>
+                <span class="hovering-button-titles"><p>Change theme</p></span>
+            </a>
+        </span>
+    </nav>
+</header>
