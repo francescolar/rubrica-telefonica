@@ -274,50 +274,19 @@ public class DbUtility {
         return listContactDetails;
     }
 
-    // public static void saveUploadedFile(MultipartFile file, int ownerId, int contactId) throws IOException, SQLException {
-        
-    //     if (file != null && !file.isEmpty()) {
-    //         Path uploadDir = Paths.get(uploadPath + File.separator + ownerId + File.separator + contactId);
-    //         if (!Files.exists(uploadDir)) {
-    //             Files.createDirectories(uploadDir);
-    //         }
-    //         Path filePath = uploadDir.resolve(file.getOriginalFilename());
-    //         file.transferTo(filePath);
-    //     }
-
-    //     Connection c = DbUtility.createConnection();
-    //     String sql = "UPDATE contactDetails SET img_path = ?, img_enabled = ? WHERE contact_id = ?;";
-    //     PreparedStatement stmt = c.prepareStatement(sql);
-    //     stmt.setString(1, file.getOriginalFilename());
-    //     stmt.setBoolean(2, true);
-    //     stmt.setInt(3, contactId);
-    //     stmt.executeUpdate();
-    //     stmt.close();
-    // }
-
     public static void saveUploadedFile(MultipartFile file, int ownerId, int contactId) throws IOException, SQLException {
         Dotenv dotenv = Dotenv.load();
         String uploadPath = dotenv.get("UPLOAD.PATH");
         if (file != null && !file.isEmpty()) {
-            // Ottieni l'estensione del file originale
             String originalFileName = file.getOriginalFilename();
             String extension = originalFileName.substring(originalFileName.lastIndexOf('.'));
-            
-    
-            // Crea il nuovo nome del file
             String newFileName = "avatar-" + contactId + extension;
-    
-            // Prepara il percorso di caricamento
             Path uploadDir = Paths.get(uploadPath + File.separator + ownerId + File.separator + contactId);
             if (!Files.exists(uploadDir)) {
                 Files.createDirectories(uploadDir);
             }
-    
-            // Risolvi il percorso del nuovo file
             Path filePath = uploadDir.resolve(newFileName);
             file.transferTo(filePath);
-    
-            // Aggiorna il database con il nuovo nome del file
             Connection c = DbUtility.createConnection();
             String sql = "UPDATE contact_details SET img_path = ?, img_enabled = ? WHERE contact_id = ?;";
             PreparedStatement stmt = c.prepareStatement(sql);
