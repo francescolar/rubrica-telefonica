@@ -38,6 +38,6 @@ out/
 
 .envgit
 .env
-backup.javabac
+.backup
 
 /src/main/resources/static/img/user/**

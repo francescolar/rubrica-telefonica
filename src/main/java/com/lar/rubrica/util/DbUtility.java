@@ -16,7 +16,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -142,18 +141,45 @@ public class DbUtility {
             return true;
         }
     }
+    
+    public static List<Contact> viewContact(Connection c, int contactId, int ownerId, boolean ownedContact) throws SQLException, ClassNotFoundException {
+        /*
+        id = -1 & owner id = -1 (tutti i contatti)
+        id = numero (contatto specifico)
+        */
+        
+        String sql = null;
+        String baseQuery = "SELECT contact.*, contact_details.initials, contact_details.img_path, contact_details.img_enabled " + 
+                        "FROM contact INNER JOIN contact_details ON contact.id = contact_details.contact_id ";
 
-    public static List<Contact> viewContact(Connection c, int contactId) throws SQLException, ClassNotFoundException {
-        Statement stmt = c.createStatement();
-        String sql = "";
         if (contactId == -1) {
-            sql = "SELECT * FROM contact ORDER BY fname ASC;";
+            if (ownerId != -1) {
+                if (ownedContact) {
+                    sql = baseQuery + "WHERE ownerid = ? ORDER BY fname;";
+                } else {
+                    sql = baseQuery + "WHERE NOT ownerid = ? ORDER BY fname;";
+                }
+            } else {
+                sql = baseQuery + "ORDER BY fname;";
+            }
         } else {
-            sql = "SELECT * FROM contact WHERE id = " + contactId + ";";
+            sql = baseQuery + "WHERE contact.id = ? ORDER BY fname;";
         }
+        
+        PreparedStatement stmt = c.prepareStatement(sql);
+
+
+        if (contactId == -1) {
+            if (ownerId != -1) {
+                stmt.setInt(1, ownerId);
+            }
+        } else {
+            stmt.setInt(1, contactId);
+        }
+
         List<Contact> listContact = new LinkedList<>();
-        ResultSet rs = stmt.executeQuery(sql);
-        while ( rs.next() ) {
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
             Contact contact = new Contact();
             contact.setId(rs.getInt("id"));
             contact.setFname(rs.getString("fname"));
@@ -161,6 +187,9 @@ public class DbUtility {
             contact.setEmail(rs.getString("email"));
             contact.setTel(rs.getString("tel"));
             contact.setOwnerId(rs.getInt("ownerid"));
+            contact.setInitials(rs.getString("initials"));
+            contact.setImgPath(rs.getString("img_path"));
+            contact.setImgEnabled(rs.getBoolean("img_enabled"));
             listContact.add(contact);
         }
         rs.close();
@@ -296,6 +325,24 @@ public class DbUtility {
             stmt.executeUpdate();
             stmt.close();
         }
+    }
+
+    public static int countContacts(Connection c, int ownerId) throws IOException, SQLException {
+        int totalContacts = 0;
+        String sql = switch (ownerId) {
+            case -1 -> "SELECT COUNT(*) FROM contact WHERE ownerid = ?;";
+            case -2 -> "SELECT COUNT(*) FROM contact WHERE NOT ownerid = ?;";
+            default -> "SELECT COUNT(*) FROM contact;";
+        };
+
+        PreparedStatement stmt = c.prepareStatement(sql);
+        stmt.setInt(1, ownerId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            totalContacts = rs.getInt(1);
+        }
+        stmt.close();
+        return totalContacts;
     }
 
 }

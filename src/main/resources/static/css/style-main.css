@@ -318,13 +318,62 @@ input:focus::placeholder {
     margin: 10px;
     border-radius: 10px;
     width: 300px;
+    height: 80px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.owned-contacts,
-.non-owned-contacts {
+.owned-contacts {
     display: flex;
     flex-wrap: wrap;
+    border-radius: 15px;
+    margin: 15px;
+    padding: 10px;
+    padding-bottom: 20px;
+    overflow-y: scroll;
+    gap: 5px;
+    height: 480px;
+}
+
+.non-owned-contacts-container p {
+    font-size: 25px;
+    text-align: center;
+    padding: 10px;
+}
+
+.non-owned-contacts-container {
+    border-radius: 15px;
+    margin: auto;
+    margin-top: 20px;
+    height: 50px;
+    width: 200px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 200ms ease-in-out;
+}
+
+.non-owned-contacts-container.active {
+    transform: translate(200px, -70px) scale(0.5);
+}
+
+.non-owned-contacts {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 200ms ease-in;
+    margin: 15px;
+    border-radius: 15px;
+    padding: 10px;
+    padding-bottom: 20px;
+    overflow-y: scroll;
+    gap: 5px;
+    
+}
+
+.non-owned-contacts.active {
+    visibility: visible;
+    display: flex;
+    flex-wrap: wrap;
+    opacity: 1;
+    height: 480px;
 }
 
 .info {
@@ -364,3 +413,23 @@ input:focus::placeholder {
     font-size: 12px;
 }
 
+.contact-contact-filter {
+    position: absolute;
+    right: 0px;
+    margin: 20px 70px 0px 0px;
+    text-align: center;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.contact-contact-filter input {
+    font-size: 25px;
+    padding-left: 10px;
+    border: none;
+    outline: none;
+    height: 40px;
+    width: 200px;
+    border-radius: 18px;
+}

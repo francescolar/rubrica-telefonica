@@ -34,7 +34,6 @@ public class WebController implements WebMvcConfigurer {
         registry.addViewController("/register").setViewName("register");
         registry.addViewController("/createcontact").setViewName("createcontact");
         registry.addViewController("/editcontact").setViewName("editcontact");
-        registry.addViewController("/success").setViewName("success");
         registry.addViewController("/view").setViewName("view");
         registry.addViewController("/error").setViewName("error");
     }
@@ -97,7 +96,7 @@ public class WebController implements WebMvcConfigurer {
 
         if (registrazioneEffettuata) {
             model.addAttribute("user", user);
-            return "success";
+            return "logout-success";
         } else {
             model.addAttribute("ex", !registrazioneEffettuata);
             return "register";
@@ -148,12 +147,12 @@ public class WebController implements WebMvcConfigurer {
 		try {
             int userId = DbUtility.getAuthenticatedUserId();
 			Connection c = DbUtility.createConnection();
-			List<Contact> contactList = DbUtility.viewContact(c, -1);
-            List<ContactDetails> contactDetailsList = DbUtility.viewContactDetails(c);
+			List<Contact> ownedContactList = DbUtility.viewContact(c, -1, userId, true);
+			List<Contact> allContactList = DbUtility.viewContact(c, -1, userId, false);
 			DbUtility.closeConnection(c);
-			model.addAttribute("contact", contactList);
+			model.addAttribute("ownedContacts", ownedContactList);
+			model.addAttribute("allContacts", allContactList);
             model.addAttribute("userId", userId);
-            model.addAttribute("contactDetails", contactDetailsList);
             return "view";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,7 +164,7 @@ public class WebController implements WebMvcConfigurer {
     public String editcontact(@RequestParam("id") Integer contactId,Model model) {
         try {
             Connection c = DbUtility.createConnection();
-            Contact contact = DbUtility.viewContact(c, contactId).get(0);
+            Contact contact = DbUtility.viewContact(c, contactId, -1, false).get(0);
             model.addAttribute("contact", contact);
             DbUtility.closeConnection(c);
             return "editcontact";

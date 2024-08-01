@@ -19,7 +19,6 @@ public class ContactDetails {
 
     private boolean imgEnabled;
 
-    
 
 
 

@@ -1,8 +1,11 @@
 package com.lar.rubrica.module;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@Component
 public class Contact {
 
     @NotNull
@@ -22,6 +25,30 @@ public class Contact {
 
     @NotNull
     private int ownerId;
+
+    @NotNull
+    @Size(min=2, max=2)
+    private String initials;
+
+    private String imgPath;
+
+    private boolean imgEnabled;
+
+    public Contact(@NotNull int id, @Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
+            @Size(min = 2, max = 50) String email, @Size(min = 5, max = 15) String tel, @NotNull int ownerId,
+            @NotNull @Size(min = 2, max = 2) String initials, String imgPath, boolean imgEnabled) {
+        this.id = id;
+        this.fname = fname;
+        this.lname = lname;
+        this.email = email;
+        this.tel = tel;
+        this.ownerId = ownerId;
+        this.initials = initials;
+        this.imgPath = imgPath;
+        this.imgEnabled = imgEnabled;
+    }
+
+
 
     public Contact(@Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
             @Size(min = 2, max = 50) String email, @Size(min = 5, max = 15) String tel) {
@@ -163,6 +190,49 @@ public class Contact {
         sb.append(", ownerId=").append(ownerId);
         sb.append('}');
         return sb.toString();
+    }
+
+
+    /**
+     * @return String return the initials
+     */
+    public String getInitials() {
+        return initials;
+    }
+
+    /**
+     * @param initials the initials to set
+     */
+    public void setInitials(String initials) {
+        this.initials = initials;
+    }
+
+    /**
+     * @return String return the imgPath
+     */
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    /**
+     * @param imgPath the imgPath to set
+     */
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
+
+    /**
+     * @return boolean return the imgEnabled
+     */
+    public boolean isImgEnabled() {
+        return imgEnabled;
+    }
+
+    /**
+     * @param imgEnabled the imgEnabled to set
+     */
+    public void setImgEnabled(boolean imgEnabled) {
+        this.imgEnabled = imgEnabled;
     }
 
 }

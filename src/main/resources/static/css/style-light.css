@@ -115,3 +115,24 @@ background-color: #cfb0a7;
 background-color: #ffdbd1;
 color: #3a0b01;
 }
+
+.owned-contacts,
+.non-owned-contacts {
+border: 0.01em solid rgba(35, 27, 0, 0.5);
+box-shadow: 0px 0px 3px #423734;
+}
+
+.non-owned-contacts-container {
+background-color: #f5e1a7;
+}
+
+.contact-contact-filter input {
+background-color: #ffdad6;
+box-shadow: 0px 0px 3px #a08c87;
+transition: background-color 150ms ease-out;
+}
+
+.contact-contact-filter input:focus {
+background-color: #e8d6d2;
+
+}
