@@ -1,7 +1,5 @@
 package com.lar.rubrica.controller;
 
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import com.lar.rubrica.module.Contact;
@@ -23,7 +21,7 @@ public class ContactRestController {
     try {
       list = DbUtility.viewContact(c, -1, -1, false);
       c.close();
-    } catch (Exception e) {
+    } catch (ClassNotFoundException | SQLException e) {
       e.printStackTrace();
     }
     return list;

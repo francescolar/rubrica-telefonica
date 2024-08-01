@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,7 +34,6 @@ public class DbUtility {
 
     private static DataSource dataSource;
 
-    @Autowired
     public DbUtility(DataSource dataSource) {
         DbUtility.dataSource = dataSource;
     }
@@ -107,14 +105,15 @@ public class DbUtility {
         }
     }
 
-    public static void updateContactPreparedStatement(Connection c, String id, String fname, String lname, String email,
+    public static void updateContactPreparedStatement(Connection c, int id, String fname, String lname, String email,
             String tel) throws SQLException {
-        String sql = "UPDATE contact SET fname = ?, lname = ?, email = ?, tel = ? WHERE id = " + id + ";";
+        String sql = "UPDATE contact SET fname = ?, lname = ?, email = ?, tel = ? WHERE id = ?;";
         PreparedStatement stmt = c.prepareStatement(sql);
         stmt.setString(1, fname);
         stmt.setString(2, lname);
         stmt.setString(3, email);
         stmt.setString(4, tel);
+        stmt.setInt(5, id);
         stmt.executeUpdate();
         stmt.close();
     }
@@ -284,6 +283,30 @@ public class DbUtility {
         c.close();
     }
 
+
+    public static void updateContactInitials(int contact_id, String fname, String lname) throws SQLException, ClassNotFoundException {
+        Connection c = createConnection();
+        String sql = "UPDATE contact_details SET initials = ? WHERE contact_id = ?;";
+        PreparedStatement stmt = c.prepareStatement(sql);
+        String nameInitial, surnameInitial, initials;
+        nameInitial = "";
+        surnameInitial = "";
+        initials = "";
+        if (fname != null && !fname.isEmpty()) {
+            nameInitial = fname.substring(0, 1).toUpperCase();
+        }
+
+        if (lname != null && !lname.isEmpty()) {
+            surnameInitial = lname.substring(0, 1).toUpperCase();
+        }
+        initials = nameInitial.concat(surnameInitial);
+        stmt.setString(1, initials);
+        stmt.setInt(2, contact_id);
+        stmt.executeUpdate();
+        stmt.close();
+        c.close();
+    }
+
     public static List<ContactDetails> viewContactDetails(Connection c) throws SQLException, ClassNotFoundException {
         Statement stmt = c.createStatement();
         String sql = "SELECT * FROM contact_details;";
@@ -315,6 +338,9 @@ public class DbUtility {
                 Files.createDirectories(uploadDir);
             }
             Path filePath = uploadDir.resolve(newFileName);
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            }
             file.transferTo(filePath);
             Connection c = DbUtility.createConnection();
             String sql = "UPDATE contact_details SET img_path = ?, img_enabled = ? WHERE contact_id = ?;";
@@ -326,6 +352,7 @@ public class DbUtility {
             stmt.close();
         }
     }
+    
 
     public static int countContacts(Connection c, int ownerId) throws IOException, SQLException {
         int totalContacts = 0;

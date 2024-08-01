@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Language" content="EN">
     <meta name="copyright" content="Francesco La Ruffa">
-    <title>Rubrica | Lista contatti</title>
+    <title>Rubrica | Contact list</title>
     <meta name="description" content="View contact page">
 	<meta name="keywords" content="View">
     <script type="text/javascript"></script>
@@ -17,7 +17,7 @@
     <script src="/js/theme-toggle.js" type="text/javascript" defer></script>
     <script src="/js/transition.js" type="text/javascript" defer></script>
     <script src="/js/main.js" type="text/javascript" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
     <script src="/js/viewScroll.js" type="text/javascript" defer></script>
 </head>
 <body>
@@ -28,9 +28,9 @@
             <h2>Your contacts</h2>
         </div>
         <div class="owned-contacts">
-            <div class="contact-contact-filter">
-                <label for="contact-filter-input">Search</label>
-                <input v-model="searchOwned" name="contact-filter-input">
+            <div class="contact-filter">
+                <label for="owned-filter-input">Search</label>
+                <input v-model="searchOwned" name="owned-filter-input">
             </div>
             <div v-for="contact in filteredOwnedContacts" :key="contact.id" class="card-container">
                     <img v-if="contact.imgEnabled" class="profile-image" :src="'/img/user/' + contact.ownerId + '/' + contact.id + '/' + contact.imgPath" alt="Profile Image" />
@@ -53,7 +53,7 @@
         </div>
         <div id="toggleDropdown" class="non-owned-contacts-container" @click="toggleContacts" :class="{ 'active': showNonOwnedContacts }"><p id="toggleText">{{ toggleText }}</p></div>
         <div class="non-owned-contacts" v-show="showNonOwnedContacts" :class="{ 'active': showNonOwnedContacts }">
-            <div class="contact-contact-filter">
+            <div class="contact-filter">
                 <label for="contact-filter-input">Search</label>
                 <input v-model="searchNonOwned" name="contact-filter-input">
             </div>

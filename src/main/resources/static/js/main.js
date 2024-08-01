@@ -23,3 +23,21 @@ function togglePsw() {
 
     }
   }
+
+  new Vue({
+    el: '#editApp',
+    data: {
+        isEditing: false,
+    },
+    methods: {
+        submitForm() {
+            this.$refs.editContactForm.submit();
+        },
+        submitDeleteForm() {
+            this.$refs.deleteContactForm.submit();
+        },
+        toggleView() {
+            this.isEditing = !this.isEditing;
+        }
+    }
+});

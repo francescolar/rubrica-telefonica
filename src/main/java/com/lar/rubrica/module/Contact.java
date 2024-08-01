@@ -11,22 +11,19 @@ public class Contact {
     @NotNull
     private int id;
     
-    @Size(min=2, max=30)
+    @Size(min=0, max=30)
     private String fname;
 
-    @Size(min=2, max=30)
+    @Size(min=0, max=30)
     private String lname;
 
-    @Size(min=2, max=50)
     private String email;
 
-    @Size(min=5, max=15)
     private String tel;
 
     @NotNull
     private int ownerId;
 
-    @NotNull
     @Size(min=2, max=2)
     private String initials;
 
@@ -34,9 +31,9 @@ public class Contact {
 
     private boolean imgEnabled;
 
-    public Contact(@NotNull int id, @Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
-            @Size(min = 2, max = 50) String email, @Size(min = 5, max = 15) String tel, @NotNull int ownerId,
-            @NotNull @Size(min = 2, max = 2) String initials, String imgPath, boolean imgEnabled) {
+    public Contact(@NotNull int id, @Size(min = 0, max = 30) String fname, @Size(min = 0, max = 30) String lname,
+            String email, String tel, @NotNull int ownerId,
+            @Size(min = 2, max = 2) String initials, String imgPath, boolean imgEnabled) {
         this.id = id;
         this.fname = fname;
         this.lname = lname;
@@ -50,8 +47,8 @@ public class Contact {
 
 
 
-    public Contact(@Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
-            @Size(min = 2, max = 50) String email, @Size(min = 5, max = 15) String tel) {
+    public Contact(@Size(min = 0, max = 30) String fname, @Size(min = 0, max = 30) String lname,
+            @Size(min = 0, max = 50) String email, String tel) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
@@ -60,8 +57,8 @@ public class Contact {
 
 
 
-    public Contact(@Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname,
-            @Size(min = 2, max = 50) String email, @Size(min = 10, max = 10) String tel, @NotNull int ownerId) {
+    public Contact(@Size(min = 0, max = 30) String fname, @Size(min = 0, max = 30) String lname,
+            @Size(min = 0, max = 50) String email, String tel, @NotNull int ownerId) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;

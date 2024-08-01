@@ -3,10 +3,11 @@
 <head>
     <link rel="icon" href="/img/site/favicon.png" type="image/x-icon" >
 	<link rel="shortcut icon" href="/img/site/favicon.png" type="image/x-icon" >
+    <meta charset="UTF-8">
     <meta http-equiv="Content-Language" content="EN">
     <meta name="copyright" content="Francesco La Ruffa">
     <meta charset="UTF-8" />
-    <title>Rubrica | Aggiungi contatto</title>
+    <title>Rubrica | Add contact</title>
     <meta name="description" content="Create contact">
 	<meta name="keywords" content="create">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -18,37 +19,39 @@
 </head>
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
-    <form action="#" th:action="@{/createcontact}" th:object="${contact}" method="post" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <td>Name:</td>
-                <td><input type="text" th:field="*{fname}" /></td>
-                <td th:if="${#fields.hasErrors('fname')}" th:errors="*{fname}">Name Error</td>
-            </tr>
-            <tr>
-                <td>Surname:</td>
-                <td><input type="text" th:field="*{lname}" /></td>
-                <td th:if="${#fields.hasErrors('lname')}" th:errors="*{lname}">Surname Error</td>
-            </tr>
-            <tr>
-                <td>Email:</td>
-                <td><input type="text" th:field="*{email}" /></td>
-            </tr>
-            <tr>
-                <td>Cellphone number:</td>
-                <td><input type="text" th:field="*{tel}" /></td>
-            </tr>
-            <tr>
-                <td>Choose a profile picture:</td>
-                <td><input type="file" name="avatar" accept="image/png, image/jpeg" /></td>
-            </tr>
-            <tr>
-                <td><button type="submit">Submit</button></td>
-            </tr>
-        </table>
-    </form>
-    <td>
-        <a href="/homepage">Home</a>
-    </td>
+    <main>
+    <div class="main-login-container">
+        <h2>Add contact information</h2>
+        <div class="login-container">
+            <form action="#" th:action="@{/createcontact}" th:object="${contact}" method="post" enctype="multipart/form-data">
+                <div class="tooltip">
+                    <input class="text-field" th:field="*{fname}" title="" type="text" placeholder="first name"/>
+                    <div class="tooltiptext">First name</div>
+                </div>
+                <div class="tooltip">
+                    <input class="text-field" th:field="*{lname}" title="" type="text" placeholder="last name"/>
+                    <div class="tooltiptext">Last name</div>
+                </div>
+                <div class="tooltip">
+                    <input class="text-field" th:field="*{email}" title="" type="email" placeholder="email"/>
+                    <div class="tooltiptext">E-mail</div>
+                </div>
+                <div class="tooltip">
+                    <input class="text-field" th:field="*{tel}" title="" type="tel" placeholder="cell number"/>
+                    <div class="tooltiptext">Cell number</div>
+                </div>
+                <div>
+                    <label for="file-upload" class="custom-file-upload">
+                        Upload profile picture
+                    </label>
+                    <input id="file-upload" type="file" name="avatar" accept="image/png, image/jpeg" placeholder="upload pic" />
+                </div>
+                <div>
+                    <input type="submit" value="Submit" class="login-button">
+                </div>
+            </form>
+        </div>
+    </div>
+    </main>
 </body>
 </html>

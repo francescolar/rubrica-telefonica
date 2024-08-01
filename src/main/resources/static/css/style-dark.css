@@ -48,6 +48,10 @@ main {
 color: #f1dfda;
 }
 
+.welcome-message a {
+color: #D8C58D;
+}
+
 .login-container {
 background-color: #5d4037;
 box-shadow: 0px 0px 3px #423734;
@@ -127,13 +131,73 @@ border: 0.01em solid #ffdbd1;
 background-color: #5d4037;
 }
 
-.contact-contact-filter input {
+.contact-filter input {
 background-color: #5d4037;
 box-shadow: 0px 0px 3px #a08c87;
 transition: background-color 150ms ease-out;
 }
 
-.contact-contact-filter input:focus {
+.contact-filter input:focus {
 background-color: #e8d6d2;
+}
 
+.custom-file-upload {
+box-shadow: 0px 0px 3px #423734;
+border: 0.01em solid #ffdbd1;
+color: #ffdbd1;
+transition: background-color 150ms ease-out;
+}
+
+.custom-file-upload:hover {
+  background-color: #a14e35;
+}
+
+
+.profile-image-contact-view {
+  background-color: #5d4037;
+  color: #ffdbd1;
+  box-shadow: 0px 0px 3px #423734;
+}
+
+.edit-contact-button {
+  font-weight: normal;
+  background-color: #534619;
+  color: #f5e1a7;
+}
+
+.delete-btn {
+  background-color: #93000a;
+  color: #ffdad6;
+  box-shadow: 0px 0px 3px #690005;
+}
+
+.contact-card-container {
+  background-color: #723523;
+}
+
+.edit-button-container input:hover {
+  background-color: #3b2f05;
+}
+
+.delete-btn:hover {
+  background-color: #690005 !important;
+}
+
+.contact-card-container input, .view-contact-title input {
+  background-color: #5d4037;
+box-shadow: 0px 0px 3px #a08c87;
+transition: background-color 150ms ease-out;
+color: #ffdad6;
+}
+
+.contact-card-container input:hover, .view-contact-title input:hover {
+  background-color: #5c4943;
+box-shadow: 0px 0px 3px #a08c87;
+transition: background-color 150ms ease-out;
+}
+
+.contact-card-container input:focus, .view-contact-title input:focus {
+  background-color: #807471;
+box-shadow: 0px 0px 3px #a08c87;
+transition: background-color 150ms ease-out;
 }

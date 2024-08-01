@@ -1,10 +1,12 @@
 package com.lar.rubrica.controller;
 
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,7 +30,7 @@ import jakarta.validation.Valid;
 public class WebController implements WebMvcConfigurer {
 
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
+    public void addViewControllers(@NonNull ViewControllerRegistry registry) {
         registry.addViewController("/homepage").setViewName("homepage");
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/register").setViewName("register");
@@ -47,7 +49,7 @@ public class WebController implements WebMvcConfigurer {
             User user = DbUtility.getUserDetails();
             model.addAttribute("user", user);
             return "homepage";
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return "redirect:/error";
         }
@@ -59,7 +61,7 @@ public class WebController implements WebMvcConfigurer {
             User user = DbUtility.getUserDetails();
             model.addAttribute("user", user);
             return "homepage";
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return "redirect:/error";
         }
@@ -129,18 +131,13 @@ public class WebController implements WebMvcConfigurer {
             int contactId = DbUtility.insertContactPreparedStatement(c, contact.getFname(), contact.getLname(), contact.getEmail(), contact.getTel(), ownerId);
             DbUtility.setContactInitials(contactId, contact.getFname(), contact.getLname());
             DbUtility.saveUploadedFile(avatar, ownerId, contactId);
-
             DbUtility.closeConnection(c);
-            System.out.println("Contact added");
             return "redirect:/view";
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return "redirect:/error";
         }
     }
-
-    
-    
 
     @GetMapping("/view")
 	public String viewContacts(Model model) {
@@ -154,28 +151,28 @@ public class WebController implements WebMvcConfigurer {
 			model.addAttribute("allContacts", allContactList);
             model.addAttribute("userId", userId);
             return "view";
-		} catch (Exception e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
             return "redirect:/error";
 		}
 	}
 
     @GetMapping("/editcontact")
-    public String editcontact(@RequestParam("id") Integer contactId,Model model) {
+    public String editcontact(@RequestParam("id") Integer contactId, Model model) {
         try {
             Connection c = DbUtility.createConnection();
             Contact contact = DbUtility.viewContact(c, contactId, -1, false).get(0);
             model.addAttribute("contact", contact);
             DbUtility.closeConnection(c);
             return "editcontact";
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
             return "redirect:/view";
 		}
     }
 
     @PostMapping("/editcontact")
-    public String editContactSave(@Valid @ModelAttribute Contact contact, Model model, BindingResult bindingResult) {
+    public String editContactSave(@Valid @ModelAttribute Contact contact, Model model, @RequestParam("avatar") MultipartFile avatar, BindingResult bindingResult) {
         
         if (bindingResult.hasErrors()) {
             return "login";
@@ -183,15 +180,18 @@ public class WebController implements WebMvcConfigurer {
         try {
             //fname, lname, email, tel, ownerId
             Connection c = DbUtility.createConnection();
+            int userId = DbUtility.getAuthenticatedUserId();
             DbUtility.updateContactPreparedStatement(c,
-                        Integer.toString(contact.getId()),
+                        contact.getId(),
                         contact.getFname(),
                         contact.getLname(),
                         contact.getEmail(),
                         contact.getTel());
+            DbUtility.updateContactInitials(contact.getId(), contact.getFname(), contact.getLname());
+            DbUtility.saveUploadedFile(avatar, userId, contact.getId());
             DbUtility.closeConnection(c);
             System.out.println("Contact updated");
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
         return "redirect:/view";
@@ -203,7 +203,7 @@ public class WebController implements WebMvcConfigurer {
             Connection c = DbUtility.createConnection();
             DbUtility.deleteContactPreparedStatement(c, contactId);
             DbUtility.closeConnection(c);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return "redirect:/view";

@@ -126,13 +126,49 @@ box-shadow: 0px 0px 3px #423734;
 background-color: #f5e1a7;
 }
 
-.contact-contact-filter input {
+.contact-filter input {
 background-color: #ffdad6;
 box-shadow: 0px 0px 3px #a08c87;
 transition: background-color 150ms ease-out;
 }
 
-.contact-contact-filter input:focus {
+.contact-filter input:focus {
 background-color: #e8d6d2;
+}
 
+.custom-file-upload {
+box-shadow: 0px 0px 3px #a08c87;
+border: 0.01em solid rgba(35, 27, 0, 0.5);
+color: #3a0b01;
+transition: background-color 150ms ease-out;
+}
+
+.custom-file-upload:hover {
+background-color: #e8d6d2;
+}
+
+.profile-image-contact-view {
+  background-color: #392e2b;
+  color: #ffede8;
+  box-shadow: 0px 0px 3px #423734;
+}
+
+.edit-contact-button {
+  background-color: #f5e1a7;
+  color: #231b00;
+  box-shadow: 0px 0px 3px #423734;
+  }
+
+.delete-btn {
+  background-color: #ffdad6;
+  color: #410002;
+  box-shadow: 0px 0px 3px #410002;
+}
+
+.edit-button-container input:hover {
+  background-color: #ffdd75;
+}
+
+.delete-btn:hover {
+  background-color: #ffbbb3 !important;
 }
