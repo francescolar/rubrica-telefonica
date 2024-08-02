@@ -20,26 +20,8 @@
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
     <main id="editApp">
-        <div v-if="!isEditing" class="main-contact-card-container">
-            <h2 th:text="${contact.fname} + ' ' + ${contact.lname}">Name and surname</h2>
-            <div class="contact-card-container">
-                <img th:if="${contact.imgEnabled}" class="profile-image-contact-view" th:src="'/img/user/' + ${contact.ownerId} + '/' + ${contact.id} + '/' + ${contact.imgPath}" alt="Profile Image" />
-                <span th:unless="${contact.imgEnabled}" th:text="${contact.initials}" class="profile-image-contact-view">NS</span>
-                <div>
-                    <span class="view-label">e-mail</span>
-                    <div th:text="*{contact.email}">Email</div>
-                </div>
-                <div>
-                    <span class="view-label">cell number</span>
-                <div th:text="*{contact.tel}">Cellphone Number</div>
-            </div>
-            </div>
-            <div th:if="${contact.ownerId == authId}" class="edit-button-container">
-                <input class="edit-contact-button" type="submit" @click="toggleView" value="Edit" />
-            </div>
-        </div>
 
-        <div v-else class="main-contact-card-container">
+        <div class="main-contact-card-container">
             <form ref="editContactForm"  action="#" th:action="@{/editcontact}" th:object="${contact}" method="post" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}" />
                 <div class="view-contact-title">
@@ -65,13 +47,15 @@
                     <input class="text-field" th:field="*{tel}" title="" type="tel" placeholder="cell number"/>
                 </div>
             </form>
-            <div th:if="${contact.ownerId == authId}" class="edit-button-container">
+            <div class="edit-button-container">
                 <input class="edit-contact-button delete-btn" type="submit" @click="submitDeleteForm" value="Delete" />
                 <input class="edit-contact-button" type="submit" @click="submitForm" value="Save" />
-                <input class="edit-contact-button" type="submit" @click="toggleView" value="Cancel" />
+                <input class="edit-contact-button" type="submit" @click="cancel" value="Cancel" />
             </div>
             <form ref="deleteContactForm" action="#" th:action="@{/delete}" th:object="${contact}" method="post">
                 <input type="hidden" th:field="*{id}" />
+            </form>
+            <form ref="cancel" action="/admin/dashboard" method="get">
             </form>
         </div>
     </main>

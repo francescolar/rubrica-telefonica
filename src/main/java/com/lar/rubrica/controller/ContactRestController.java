@@ -14,17 +14,14 @@ import java.util.List;
 @RequestMapping("/api/contacts")
 public class ContactRestController {
 
-  @GetMapping
+  @GetMapping("/all")
   public List<Contact> getAllContacts() throws SQLException {
-    List<Contact> list = new ArrayList<>();
-    Connection c = DbUtility.createConnection();
-    try {
-      list = DbUtility.viewContact(c, -1, -1, false);
-      c.close();
+    try (Connection c = DbUtility.createConnection()) {
+      return DbUtility.viewContact(c, -1, -1, false);
     } catch (ClassNotFoundException | SQLException e) {
       e.printStackTrace();
+      return new ArrayList<>();
     }
-    return list;
   }
 
   @GetMapping("/owned")
@@ -38,7 +35,6 @@ public class ContactRestController {
     }
   }
 
-  // Endpoint per i contatti non posseduti
   @GetMapping("/non-owned")
   public List<Contact> getNonOwnedContacts() throws SQLException {
     try (Connection c = DbUtility.createConnection()) {

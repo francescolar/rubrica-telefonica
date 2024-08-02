@@ -36,9 +36,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/homepage", "/register", "/css/**", "/js/**", "/fragments/**", "/img/**", "/logout-success").permitAll() // Pagine accessibili senza autenticazione
+                        .requestMatchers("/", "/homepage", "/register", "/css/**", "/js/**", "/fragments/**", "/img/**", "/logout-success").permitAll()
+                        .requestMatchers("/admin/**", "/superadmin/**").hasRole("SUPERADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/superadmin/**").hasRole("SUPERADMIN")
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .loginPage("/login")

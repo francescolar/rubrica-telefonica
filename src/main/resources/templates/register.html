@@ -34,7 +34,7 @@
                     <div class="error-message" th:if="${ex}">Username already exist</div>
                     <div class="error-message" v-if="errors.username">Username must be at least 4 characters</div>
                     <div class="tooltip">
-                        <input class="text-field" th:field="*{password}" title="" type="password" id="password" name="password" placeholder="password *" required/>
+                        <input class="text-field" th:field="*{password}" v-model="password" title="" type="password" id="password" name="password" placeholder="password *" required/>
                         <div class="tooltiptext">Password</div>
                         <span onclick="togglePsw()" id="show-password" class="material-symbols-rounded">key_off</span>
                     </div>
@@ -43,7 +43,7 @@
                         <ul>
                             <li>at least 8 characters</li>
                             <li>must include an uppercase letter</li>
-                            <li>must include an uppercase letter</li>
+                            <li>must include a lowercase letter</li>
                             <li>must include a number</li>
                             <li>must include a special character</li>
                         </ul>

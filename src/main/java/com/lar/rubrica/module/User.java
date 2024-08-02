@@ -23,6 +23,54 @@ public class User {
 
     private String salt;
 
+    private boolean enabled;
+
+    private String role;
+
+
+    public User(@NotNull int id, @NotNull @Size(min = 2, max = 30) String username,
+            @NotNull @Size(min = 2, max = 200) String password, @Size(min = 2, max = 30) String fname,
+            @Size(min = 2, max = 30) String lname, boolean enabled, String role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.fname = fname;
+        this.lname = lname;
+        this.enabled = enabled;
+        this.role = role;
+    }
+
+    public User(@NotNull int id, @NotNull @Size(min = 2, max = 30) String username,
+            @NotNull @Size(min = 2, max = 200) String password, @Size(min = 2, max = 30) String fname,
+            @Size(min = 2, max = 30) String lname, boolean enabled) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.fname = fname;
+        this.lname = lname;
+        this.enabled = enabled;
+    }
+
+    public User(@NotNull int id, @NotNull @Size(min = 2, max = 30) String username,
+            @NotNull @Size(min = 2, max = 200) String password, @Size(min = 2, max = 30) String fname,
+            @Size(min = 2, max = 30) String lname, String salt, boolean enabled) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.fname = fname;
+        this.lname = lname;
+        this.salt = salt;
+        this.enabled = enabled;
+    }
+
+    public User(@NotNull int id, @NotNull @Size(min = 2, max = 30) String username,
+            @Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname, boolean enabled) {
+        this.id = id;
+        this.username = username;
+        this.fname = fname;
+        this.lname = lname;
+        this.enabled = enabled;
+    }
 
     public User(@NotNull int id, @NotNull @Size(min = 2, max = 30) String username,
             @Size(min = 2, max = 30) String fname, @Size(min = 2, max = 30) String lname) {
@@ -78,6 +126,20 @@ public class User {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * @return boolean return the enabled
+     */
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    /**
+     * @param enabled the enabled to set
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**
@@ -148,6 +210,28 @@ public class User {
      */
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+
+    /**
+     * @return boolean return the enabled
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * @return String return the role
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(String role) {
+        this.role = role;
     }
 
 }

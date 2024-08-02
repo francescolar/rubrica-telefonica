@@ -29,7 +29,7 @@
                 <span class="material-symbols-rounded send-icon">import_contacts</span>
                 <span class="hovering-button-titles"><p>Contacts</p></span>
             </a>
-            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">
+            <a sec:authorize="hasRole('ADMIN') or hasRole('SUPERADMIN')" th:href="@{/admin/dashboard}">
                 <span class="material-symbols-rounded send-icon">admin_panel_settings</span>
                 <span class="hovering-button-titles"><p>Admin panel</p></span>
             </a>

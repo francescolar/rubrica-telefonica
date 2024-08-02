@@ -18,7 +18,6 @@
 </head>
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
-    
     <main class="animatable slide-in-bottom">
         <div sec:authorize="isAuthenticated()" class="welcome-message">
             <p>Welcome back to <i>rubrica telefonica</i>, <span th:text="${user.fname}">User</span>.</p>

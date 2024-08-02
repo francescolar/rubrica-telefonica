@@ -49,16 +49,19 @@ public class DbUtility {
     public static List<User> viewUser(Connection connection) throws SQLException {
 
         Statement stmt = connection.createStatement();
-        String sql = "SELECT * FROM \"user\" LIMIT 100";
+        String sql = "SELECT \"user\".*, authorities.authority FROM \"user\" INNER JOIN authorities ON \"user\".username = authorities.username ORDER BY \"user\".id";
         List<User> listUser = new LinkedList<>();
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
+            int id = rs.getInt("id");
             String username = rs.getString("username");
             String password = rs.getString("password");
             String salt = rs.getString("salt");
             String fname = rs.getString("fname");
             String lname = rs.getString("lname");
-            User user = new User(username, password, fname, lname);
+            boolean enabled = rs.getBoolean("enabled");
+            String role = rs.getString("authority");
+            User user = new User(id, username, password, fname, lname, enabled, role);
             user.setSalt(salt);
             listUser.add(user);
         }
@@ -121,6 +124,18 @@ public class DbUtility {
     public static void deleteContactPreparedStatement(Connection c, int id) throws SQLException {
         String sql = "DELETE FROM contact WHERE id = ?";
         PreparedStatement stmt = c.prepareStatement(sql);
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
+    public static void deleteUserPreparedStatement(Connection c, int id, String username) throws SQLException {
+        String sql = "DELETE FROM authorities WHERE username = ?";
+        PreparedStatement stmt = c.prepareStatement(sql);
+        stmt.setString(1, username);
+        stmt.executeUpdate();
+        sql = "DELETE FROM \"user\" WHERE id = ?";
+        stmt = c.prepareStatement(sql);
         stmt.setInt(1, id);
         stmt.executeUpdate();
         stmt.close();
@@ -370,6 +385,26 @@ public class DbUtility {
         }
         stmt.close();
         return totalContacts;
+    }
+
+    public static void toggleEnableUser(Connection c, int userId, boolean enabled) throws IOException, SQLException {
+        String sql = "UPDATE \"user\" SET enabled = ? WHERE id = ?;";
+        PreparedStatement stmt = c.prepareStatement(sql);
+        stmt.setBoolean(1, !enabled);
+        stmt.setInt(2, userId);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
+    public static void toggleAdminUser(Connection c, String username, String role) throws IOException, SQLException {
+        String sql = "UPDATE authorities SET authority = ? WHERE username = ?;";
+        PreparedStatement stmt = c.prepareStatement(sql);
+        if (role.equals("ROLE_USER")) {
+            stmt.setString(1, "ROLE_ADMIN");
+        } else { stmt.setString(1, "ROLE_USER"); }
+        stmt.setString(2, username);
+        stmt.executeUpdate();
+        stmt.close();
     }
 
 }

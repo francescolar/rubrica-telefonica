@@ -201,3 +201,13 @@ transition: background-color 150ms ease-out;
 box-shadow: 0px 0px 3px #a08c87;
 transition: background-color 150ms ease-out;
 }
+
+.error-container {
+  color: #ffb4ab;
+  background-color: #93000a;
+  border: 1px solid #ffdad6;
+}
+
+.error-container .support {
+  color: #ffb4ab;
+}

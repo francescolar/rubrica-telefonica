@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.lar.rubrica.module.Contact;
 import com.lar.rubrica.module.ContactDetails;
 import com.lar.rubrica.module.User;
-import com.lar.rubrica.service.UserService;
+import com.lar.rubrica.service.UserService; 
 import com.lar.rubrica.util.DbUtility;
 
 import jakarta.validation.Valid;
@@ -69,7 +69,15 @@ public class WebController implements WebMvcConfigurer {
 
     
     @GetMapping("/admin/dashboard")
-    public String adminDash() {
+    public String adminDash(Model model) {
+        try {
+            Connection c = DbUtility.createConnection();
+            List<User> list = DbUtility.viewUser(c);
+            model.addAttribute("users", list);
+            c.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return "admin/dashboard";
     }
     
@@ -158,16 +166,34 @@ public class WebController implements WebMvcConfigurer {
 	}
 
     @GetMapping("/editcontact")
-    public String editcontact(@RequestParam("id") Integer contactId, Model model) {
+    public String editContact(@RequestParam("id") Integer contactId, Model model) {
         try {
             Connection c = DbUtility.createConnection();
+            int authId = DbUtility.getAuthenticatedUserId();
             Contact contact = DbUtility.viewContact(c, contactId, -1, false).get(0);
             model.addAttribute("contact", contact);
+            model.addAttribute("authId", authId);
             DbUtility.closeConnection(c);
             return "editcontact";
         } catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
             return "redirect:/view";
+		}
+    }
+
+    @GetMapping("/admin/editcontact")
+    public String adminEditContact(@RequestParam("id") Integer contactId, Model model) {
+        try {
+            Connection c = DbUtility.createConnection();
+            int authId = DbUtility.getAuthenticatedUserId();
+            Contact contact = DbUtility.viewContact(c, contactId, -1, false).get(0);
+            model.addAttribute("contact", contact);
+            model.addAttribute("authId", authId);
+            DbUtility.closeConnection(c);
+            return "admin/editcontact";
+        } catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+            return "redirect:/admin/dashboard";
 		}
     }
 
@@ -194,7 +220,7 @@ public class WebController implements WebMvcConfigurer {
         } catch (IOException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-        return "redirect:/view";
+        return "redirect:/editcontact?id=" + contact.getId();
     }
 
     @PostMapping("/delete")
@@ -207,5 +233,53 @@ public class WebController implements WebMvcConfigurer {
             e.printStackTrace();
         }
         return "redirect:/view";
+    }
+
+    @PostMapping("/delete-user")
+    public String deleteUser(@RequestParam("id") Integer userId, @RequestParam("username") String username) {
+        try {
+            Connection c = DbUtility.createConnection();
+            DbUtility.deleteUserPreparedStatement(c, userId, username);
+            DbUtility.closeConnection(c);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin/dashboard";
+    }
+
+    @PostMapping("/admdelete")
+    public String adminDeleteContact(@RequestParam("id") Integer contactId) {
+        try {
+            Connection c = DbUtility.createConnection();
+            DbUtility.deleteContactPreparedStatement(c, contactId);
+            DbUtility.closeConnection(c);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin/dashboard";
+    }
+
+    @PostMapping("/enable")
+    public String enableUser(@RequestParam("id") Integer userId, @RequestParam("enabled") boolean enabled) {
+        try {
+            Connection c = DbUtility.createConnection();
+            DbUtility.toggleEnableUser(c, userId, enabled);
+            DbUtility.closeConnection(c);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin/dashboard";
+    }
+
+    @PostMapping("/toggle-admin")
+    public String toggleAdmin(@RequestParam("username") String username, @RequestParam("role") String role) {
+        try {
+            Connection c = DbUtility.createConnection();
+            DbUtility.toggleAdminUser(c, username, role);
+            DbUtility.closeConnection(c);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/admin/dashboard";
     }
 }

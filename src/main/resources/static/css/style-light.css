@@ -172,3 +172,13 @@ background-color: #e8d6d2;
 .delete-btn:hover {
   background-color: #ffbbb3 !important;
 }
+
+.error-container {
+  color: #ba1a1a;
+  background-color: #ffdad6;
+  border: 1px solid #410002;
+}
+
+.error-container .support {
+  color: #777;
+}

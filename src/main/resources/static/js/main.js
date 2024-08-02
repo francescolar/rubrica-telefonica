@@ -38,6 +38,9 @@ function togglePsw() {
         },
         toggleView() {
             this.isEditing = !this.isEditing;
+        },
+        cancel() {
+            this.$refs.cancel.submit();
         }
     }
 });

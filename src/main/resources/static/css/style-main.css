@@ -519,3 +519,51 @@ input[type="file"] {
     font-size: 15px;
     opacity: 0.5;
 }
+
+.error-container {
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 200px;
+}
+.error-container h1 {
+    font-size: 48px;
+    margin: 0;
+}
+.error-container p {
+    font-size: 18px;
+    margin: 10px 0;
+}
+.error-container .support {
+    font-size: 14px;
+}
+
+.user-container {
+    border-radius: 8px;
+    height: 80vh;
+    border: 1px solid #000;
+}
+
+.user-container table {
+    padding: 10px;
+}
+
+.user-container h3 {
+    margin: 10px;
+}
+
+.user-container th {
+    padding: 10px;
+}
+
+.user-container td {
+    padding: 10px;
+}
+
+.user-container table, tr {
+    width: 100%;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-collapse: collapse;
+}
