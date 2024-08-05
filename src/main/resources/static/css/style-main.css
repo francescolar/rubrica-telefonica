@@ -124,7 +124,7 @@ header {
 }
 
 .material-symbols-rounded { 
-    cursor: default;
+    cursor: pointer;
     font-variation-settings:
     'FILL' 0,
     'wght' 300,
@@ -239,9 +239,10 @@ main h6 {
     margin-top: 15px;
     width: 120px;
     font-weight: 900;
+    cursor: pointer;
 }
 
-#show-password, #show-password-confirm {
+#show-password, #show-password-confirm, #show-old-password, #show-new-password {
     position: absolute;
     margin: 9px 0 0 -35px;
     z-index: 5;

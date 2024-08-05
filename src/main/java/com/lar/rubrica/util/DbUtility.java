@@ -121,6 +121,20 @@ public class DbUtility {
         stmt.close();
     }
 
+    public static void admUpdateContactPreparedStatement(Connection c, int id, String fname, String lname, String email,
+            String tel, int ownerId) throws SQLException {
+        String sql = "UPDATE contact SET fname = ?, lname = ?, email = ?, tel = ?, ownerid = ? WHERE id = ?;";
+        PreparedStatement stmt = c.prepareStatement(sql);
+        stmt.setString(1, fname);
+        stmt.setString(2, lname);
+        stmt.setString(3, email);
+        stmt.setString(4, tel);
+        stmt.setInt(5, ownerId);
+        stmt.setInt(6, id);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
     public static void deleteContactPreparedStatement(Connection c, int id) throws SQLException {
         String sql = "DELETE FROM contact WHERE id = ?";
         PreparedStatement stmt = c.prepareStatement(sql);
@@ -255,19 +269,19 @@ public class DbUtility {
         return authUserFname;
     }
 
-    public static User getUserDetails() throws SQLException, ClassNotFoundException {
-        int authUserId = DbUtility.getAuthenticatedUserId();
+    public static User getUserDetails(int id) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM \"user\" WHERE id = ?";
         Connection c = createConnection();
         PreparedStatement stmt = c.prepareStatement(sql);
-        stmt.setInt(1, authUserId);
+        stmt.setInt(1, id);
         ResultSet rs = stmt.executeQuery();
         User user = new User();
         if (rs.next()) {
-            user.setId(authUserId);
+            user.setId(rs.getInt("id"));
             user.setUsername(rs.getString("username"));
             user.setFname(rs.getString("fname"));
             user.setLname(rs.getString("lname"));
+            user.setPassword(rs.getString("password"));
         }
         rs.close();
         stmt.close();

@@ -5,7 +5,7 @@
     </h1>
     <nav class="header-nav animatable slide-in-left">
         <span class="header-nav-container">
-            <a class="test" th:href="@{/homepage}">
+            <a th:href="@{/homepage}">
                 <span class="material-symbols-rounded send-icon">home</span>
                 <span class="hovering-button-titles"><p>Home</p></span>
             </a>
@@ -41,7 +41,7 @@
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
             <a href="#" id="theme-toggle">
-                <span class="material-symbols-rounded send-icon">dark_mode</span>
+                <span id="theme-icon" class="material-symbols-rounded send-icon">dark_mode</span>
                 <span class="hovering-button-titles"><p>Change theme</p></span>
             </a>
         </span>

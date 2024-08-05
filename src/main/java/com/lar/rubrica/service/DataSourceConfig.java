@@ -16,8 +16,9 @@ public class DataSourceConfig {
         Dotenv dotenv = Dotenv.load();
         String password_db = dotenv.get("PASSWORD_DB");
         String username = dotenv.get("USERNAME_DB");
+        String url = dotenv.get("URL_DB");
         return new DriverManagerDataSource(
-            "jdbc:postgresql://localhost:5432/rubrica",
+            url,
             username,
             password_db
         );

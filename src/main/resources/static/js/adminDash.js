@@ -5,11 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
             users: [],
             contacts: [],
             searchUser: '',
-            searchContacts: ''
+            searchContacts: '',
+            authId: null
         },
         mounted() {
             this.fetchUsers(),
-            this.fetchContacts();
+            this.fetchContacts(),
+            this.authId = this.$el.getAttribute('data-auth-id');
         },
         computed: {
             filteredUsers() {

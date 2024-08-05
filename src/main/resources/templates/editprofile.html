@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <link rel="icon" href="/img/site/favicon.png" type="image/x-icon" >
+	<link rel="shortcut icon" href="/img/site/favicon.png" type="image/x-icon" >
+    <meta http-equiv="Content-Language" content="EN">
+    <meta name="copyright" content="Francesco La Ruffa">
+    <meta charset="UTF-8" />
+    <title>Rubrica | Edit Profile</title>
+    <meta name="description" content="edit profile">
+	<meta name="keywords" content="view profile, edit">
+    <link id="theme-stylesheet-main" rel="stylesheet" type="text/css" href="/css/style-main.css" />
+    <link id="theme-stylesheet-color" rel="stylesheet" type="text/css" href="/css/style-light.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js" defer></script>
+    <script src="/js/main.js" type="text/javascript" defer></script>
+    <script src="/js/theme-toggle.js" type="text/javascript" defer></script>
+    <script src="/js/transition.js" type="text/javascript" defer></script>
+    <script src="/js/editUserValidation.js" type="text/javascript" defer></script>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main id="editForm">
+
+        <div class="main-contact-card-container">
+            <form ref="editContactForm" action="#" th:action="@{/editprofile}" th:object="${user}" method="post" @submit.prevent="validateForm" novalidate>
+                <input type="hidden" th:field="*{id}" />
+                <div class="view-contact-title">
+                    <input class="text-field" th:field="*{fname}" name="firstName" v-model="firstName" id="firstName" title="" type="text" placeholder="first name" required/>
+                    <div class="error-message" v-if="errors.firstName">Please enter your first name</div>
+
+                    <input class="text-field" th:field="*{lname}" name="lastName" v-model="lastName" id="lastName" title="" type="text" placeholder="last name" required/>
+                    <div class="error-message" v-if="errors.lastName">Please enter your last name</div>
+
+                </div>
+                <div class="contact-card-container">
+                    <div>
+                        <input class="text-field" th:field="*{username}" v-model="username" id="username" name="username" title="" type="email" placeholder="username" required/>
+                        <div class="error-message" v-if="errors.username">Username must be at least 4 characters</div>
+                        <div th:if="${usernameCheck}">Username already existing</div>
+                    </div>
+                    <div>
+                        <input class="text-field" id="old-password" th:field="*{password}" v-model="oldPassword" name="old-password" title="" type="password" placeholder="old password" required/>
+                        <span onclick="toggleOldPsw()" id="show-old-password" class="material-symbols-rounded">key_off</span>
+                        <div th:if="${pswCheck}">Password does not match</div>
+                        <div class="error-message" v-if="errors.oldPassword">Password is required</div>
+
+                    </div>
+                    <div>
+                        <input class="text-field" name="newPassword" id="newPassword" v-model="newPassword" title="" type="password" placeholder="new password"/>
+                        <span onclick="toggleNewPsw()" id="show-new-password" class="material-symbols-rounded">key_off</span>
+                        <div class="error-message" style="text-align: left;" v-if="errors.newPassword">
+                            Password doesn't match requirements:
+                            <ul>
+                                <li>at least 8 characters</li>
+                                <li>must include an uppercase letter</li>
+                                <li>must include a lowercase letter</li>
+                                <li>must include a number</li>
+                                <li>must include a special character</li>
+                            </ul>
+                            </div>
+                    </div>
+                    <div>
+                        <input class="text-field" name="confirmPassword" id="confirmPassword" v-model="confirmPassword" title="" type="password" placeholder="confirm new password"/>
+                        <span onclick="toggleConfirmPsw()" id="show-password-confirm" class="material-symbols-rounded">key_off</span>
+                        <div class="error-message" v-if="errors.confirmPassword">Passwords do not match</div>
+
+                    </div>
+                </div>
+                <div class="edit-button-container">
+                    <input class="edit-contact-button" type="submit" value="Save" />
+                </div>
+            </form>
+            <div class="edit-button-container">
+                <input class="edit-contact-button" type="submit" @click="cancel" value="Cancel" />
+            </div>
+            <form ref="cancel" action="/profile" method="get"></form>
+        </div>
+    </main>
+</body>
+</html>

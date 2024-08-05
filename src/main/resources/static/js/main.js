@@ -24,6 +24,32 @@ function togglePsw() {
     }
   }
 
+  function toggleOldPsw() {
+    var password = document.getElementById("old-password");
+    var pswButton = document.getElementById("show-old-password");
+    if (password.type === "password") {
+        password.type = "text";
+        pswButton.innerHTML = "key";
+    } else {
+        password.type = "password";
+        pswButton.innerHTML = "key_off";
+
+    }
+  }
+
+  function toggleNewPsw() {
+    var password = document.getElementById("newPassword");
+    var pswButton = document.getElementById("show-new-password");
+    if (password.type === "password") {
+        password.type = "text";
+        pswButton.innerHTML = "key";
+    } else {
+        password.type = "password";
+        pswButton.innerHTML = "key_off";
+
+    }
+  }
+
   new Vue({
     el: '#editApp',
     data: {

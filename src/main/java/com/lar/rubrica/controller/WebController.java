@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,7 +22,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.lar.rubrica.module.Contact;
 import com.lar.rubrica.module.ContactDetails;
 import com.lar.rubrica.module.User;
-import com.lar.rubrica.service.UserService; 
+import com.lar.rubrica.service.UserService;
+import com.lar.rubrica.service.WebSecurityConfig;
+import com.lar.rubrica.util.CryptoPassword;
 import com.lar.rubrica.util.DbUtility;
 
 import jakarta.validation.Valid;
@@ -38,6 +41,8 @@ public class WebController implements WebMvcConfigurer {
         registry.addViewController("/editcontact").setViewName("editcontact");
         registry.addViewController("/view").setViewName("view");
         registry.addViewController("/error").setViewName("error");
+        registry.addViewController("/profile").setViewName("profile");
+        registry.addViewController("/editprofile").setViewName("editprofile");
     }
 
     @Autowired
@@ -45,8 +50,10 @@ public class WebController implements WebMvcConfigurer {
 
     @GetMapping("/")
     public String showHome(Model model) {
+        
         try {
-            User user = DbUtility.getUserDetails();
+            int authUserId = DbUtility.getAuthenticatedUserId();
+            User user = DbUtility.getUserDetails(authUserId);
             model.addAttribute("user", user);
             return "homepage";
         } catch (ClassNotFoundException | SQLException e) {
@@ -58,7 +65,8 @@ public class WebController implements WebMvcConfigurer {
     @GetMapping("/homepage")
     public String showHome2(Model model) {
         try {
-            User user = DbUtility.getUserDetails();
+            int authUserId = DbUtility.getAuthenticatedUserId();
+            User user = DbUtility.getUserDetails(authUserId);
             model.addAttribute("user", user);
             return "homepage";
         } catch (ClassNotFoundException | SQLException e) {
@@ -68,19 +76,6 @@ public class WebController implements WebMvcConfigurer {
     }
 
     
-    @GetMapping("/admin/dashboard")
-    public String adminDash(Model model) {
-        try {
-            Connection c = DbUtility.createConnection();
-            List<User> list = DbUtility.viewUser(c);
-            model.addAttribute("users", list);
-            c.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "admin/dashboard";
-    }
-    
     @GetMapping("/error")
     public String errorPage() {
         return "error";
@@ -88,16 +83,33 @@ public class WebController implements WebMvcConfigurer {
 
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error, Model model) {
-        if (error != null) {
-            model.addAttribute("errorMessage", "Invalid username or password.");
+        try {
+            if (DbUtility.getAuthenticatedUserId() != -1) {
+                return "redirect:/homepage";
+            }
+            if (error != null) {
+                model.addAttribute("errorMessage", "Invalid username or password.");
+                model.addAttribute("afterRegistration", false);
+            }
+            return "login";
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return "redirect:/error";
         }
-        return "login";
     }
 
     @GetMapping("/register")
     public String registerGetMapping(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
+        try {
+            if (DbUtility.getAuthenticatedUserId() != -1) {
+                return "redirect:/homepage";
+            }
+            model.addAttribute("user", new User());
+            return "register";
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return "redirect:/error";
+        }
     }
 
     @PostMapping("/register")
@@ -105,17 +117,18 @@ public class WebController implements WebMvcConfigurer {
         boolean registrazioneEffettuata = userService.registerUser(user, bindingResult);
 
         if (registrazioneEffettuata) {
+            model.addAttribute("afterRegistration", true);
             model.addAttribute("user", user);
-            return "logout-success";
+            return "success";
         } else {
             model.addAttribute("ex", !registrazioneEffettuata);
             return "register";
         }
     }
 
-    @GetMapping("/logout-success")
-    public String showLogoutSuccess() {
-        return "logout-success";
+    @GetMapping("/success")
+    public String showSuccess() {
+        return "success";
     }
     
     
@@ -131,7 +144,7 @@ public class WebController implements WebMvcConfigurer {
     public String createContact(@Valid @ModelAttribute Contact contact, @ModelAttribute ContactDetails contactDetails, @RequestParam("avatar") MultipartFile avatar,
                                 BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return "createcontact";
+            return "redirect:/error";
         }
         try {
             int ownerId = DbUtility.getAuthenticatedUserId();
@@ -181,27 +194,11 @@ public class WebController implements WebMvcConfigurer {
 		}
     }
 
-    @GetMapping("/admin/editcontact")
-    public String adminEditContact(@RequestParam("id") Integer contactId, Model model) {
-        try {
-            Connection c = DbUtility.createConnection();
-            int authId = DbUtility.getAuthenticatedUserId();
-            Contact contact = DbUtility.viewContact(c, contactId, -1, false).get(0);
-            model.addAttribute("contact", contact);
-            model.addAttribute("authId", authId);
-            DbUtility.closeConnection(c);
-            return "admin/editcontact";
-        } catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-            return "redirect:/admin/dashboard";
-		}
-    }
-
     @PostMapping("/editcontact")
     public String editContactSave(@Valid @ModelAttribute Contact contact, Model model, @RequestParam("avatar") MultipartFile avatar, BindingResult bindingResult) {
         
         if (bindingResult.hasErrors()) {
-            return "login";
+            return "redirect:/error";
         }
         try {
             //fname, lname, email, tel, ownerId
@@ -235,51 +232,70 @@ public class WebController implements WebMvcConfigurer {
         return "redirect:/view";
     }
 
-    @PostMapping("/delete-user")
-    public String deleteUser(@RequestParam("id") Integer userId, @RequestParam("username") String username) {
+    @GetMapping("/profile")
+    public String viewProfile(Model model) {
         try {
-            Connection c = DbUtility.createConnection();
-            DbUtility.deleteUserPreparedStatement(c, userId, username);
-            DbUtility.closeConnection(c);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/admin/dashboard";
+            int authUserId = DbUtility.getAuthenticatedUserId();
+            User user = DbUtility.getUserDetails(authUserId);
+            model.addAttribute("user", user);
+            return "profile";
+        } catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+            return "redirect:/homepage";
+		}
     }
 
-    @PostMapping("/admdelete")
-    public String adminDeleteContact(@RequestParam("id") Integer contactId) {
+    @GetMapping("/editprofile")
+    public String editProfileGet(Model model) {
         try {
-            Connection c = DbUtility.createConnection();
-            DbUtility.deleteContactPreparedStatement(c, contactId);
-            DbUtility.closeConnection(c);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/admin/dashboard";
+            int authUserId = DbUtility.getAuthenticatedUserId();
+            User user = DbUtility.getUserDetails(authUserId);
+            model.addAttribute("user", user);
+            return "editprofile";
+        } catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+            return "redirect:/homepage";
+		}
     }
 
-    @PostMapping("/enable")
-    public String enableUser(@RequestParam("id") Integer userId, @RequestParam("enabled") boolean enabled) {
-        try {
-            Connection c = DbUtility.createConnection();
-            DbUtility.toggleEnableUser(c, userId, enabled);
-            DbUtility.closeConnection(c);
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
+    @PostMapping("/editprofile")
+    public String editProfile(@Valid @ModelAttribute("user") User user, @RequestParam("newPassword") String newPassword, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/error";
         }
-        return "redirect:/admin/dashboard";
+        try {
+            //String fname, String lname, String username, String password, int id
+            Connection c = DbUtility.createConnection();
+            int authId = DbUtility.getAuthenticatedUserId();
+            User dbUser = DbUtility.getUserDetails(authId);
+            if (WebSecurityConfig.checkPassword(dbUser, user.getPassword())) {
+                if (!user.getUsername().equals(dbUser.getUsername())) {
+                    boolean userExist = DbUtility.checkUsername(c, user.getUsername());
+                    if (!userExist) {
+                        model.addAttribute("usernameCheck", true);
+                        DbUtility.closeConnection(c);
+                        return "editprofile";
+                    }
+                }
+                if (newPassword != null && !newPassword.isEmpty()) {
+                    String salt = BCrypt.gensalt();
+                    String newCryptedPassword = CryptoPassword.cryptoPasswordwithSalt(newPassword, salt);
+                    UserService.updateExistingUser(user.getFname(), user.getLname(), user.getUsername(), newCryptedPassword, user.getId());
+                } else {
+                    UserService.updateExistingUser(user.getFname(), user.getLname(), user.getUsername(), dbUser.getPassword(), user.getId());
+                }
+                DbUtility.closeConnection(c);
+                return "redirect:/profile";
+            } else {
+                model.addAttribute("pswCheck", true);
+                DbUtility.closeConnection(c);
+                return "editprofile";
+            }
+            
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return "redirect:/error";
+        }
     }
 
-    @PostMapping("/toggle-admin")
-    public String toggleAdmin(@RequestParam("username") String username, @RequestParam("role") String role) {
-        try {
-            Connection c = DbUtility.createConnection();
-            DbUtility.toggleAdminUser(c, username, role);
-            DbUtility.closeConnection(c);
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/admin/dashboard";
-    }
 }

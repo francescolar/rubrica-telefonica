@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.lar.rubrica.module.User;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -36,21 +38,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/homepage", "/register", "/css/**", "/js/**", "/fragments/**", "/img/**", "/logout-success").permitAll()
-                        .requestMatchers("/admin/**", "/superadmin/**").hasRole("SUPERADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/", "/homepage", "/register", "/css/**", "/js/**", "/fragments/**", "/img/**", "/success").permitAll()
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")
+                        .requestMatchers("/superadmin/**").hasRole("SUPERADMIN")
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/logout-success")
+                        .defaultSuccessUrl("/success")
                         .failureUrl("/login?error=true")
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/logout-success")
+                        .logoutSuccessUrl("/success")
                         .permitAll());
 
         return http.build();
+    }
+
+    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public static boolean checkPassword(User user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 
     @Bean
