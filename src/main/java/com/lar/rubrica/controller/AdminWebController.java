@@ -31,7 +31,7 @@ import jakarta.validation.Valid;
 
 @Controller
 public class AdminWebController implements WebMvcConfigurer {
-    
+
     @Override
     public void addViewControllers(@NonNull ViewControllerRegistry registry) {
         registry.addViewController("/admin/dashboard").setViewName("admin-dashboard");
@@ -44,16 +44,18 @@ public class AdminWebController implements WebMvcConfigurer {
 
     @GetMapping("/admin/dashboard")
     public String adminDash(Model model) {
-        try {
-            Connection c = DbUtility.createConnection();
-            int authId = DbUtility.getAuthenticatedUserId();
-            List<User> list = DbUtility.viewUser(c);
-            model.addAttribute("authId", authId);
-            model.addAttribute("users", list);
-            c.close();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        /*
+         * try {
+         * Connection c = DbUtility.createConnection();
+         * int authId = DbUtility.getAuthenticatedUserId();
+         * List<User> list = DbUtility.viewUser(c);
+         * model.addAttribute("authId", authId);
+         * model.addAttribute("users", list);
+         * c.close();
+         * } catch (ClassNotFoundException | SQLException e) {
+         * e.printStackTrace();
+         * }
+         */
         return "admin/dashboard";
     }
 
@@ -68,27 +70,28 @@ public class AdminWebController implements WebMvcConfigurer {
             DbUtility.closeConnection(c);
             return "admin/editcontact";
         } catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+            e.printStackTrace();
             return "redirect:/admin/dashboard";
-		}
+        }
     }
 
-     @PostMapping("/admin/editcontact")
-    public String admEditContactSave(@Valid @ModelAttribute Contact contact, Model model, @RequestParam("avatar") MultipartFile avatar, BindingResult bindingResult) {
-        
+    @PostMapping("/admin/editcontact")
+    public String admEditContactSave(@Valid @ModelAttribute Contact contact, Model model,
+            @RequestParam("avatar") MultipartFile avatar, BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             return "redirect:/error";
         }
         try {
-            //fname, lname, email, tel, ownerId
+            // fname, lname, email, tel, ownerId
             Connection c = DbUtility.createConnection();
             DbUtility.admUpdateContactPreparedStatement(c,
-                        contact.getId(),
-                        contact.getFname(),
-                        contact.getLname(),
-                        contact.getEmail(),
-                        contact.getTel(),
-                        contact.getOwnerId());
+                    contact.getId(),
+                    contact.getFname(),
+                    contact.getLname(),
+                    contact.getEmail(),
+                    contact.getTel(),
+                    contact.getOwnerId());
             DbUtility.updateContactInitials(contact.getId(), contact.getFname(), contact.getLname());
             DbUtility.saveUploadedFile(avatar, contact.getOwnerId(), contact.getId());
             DbUtility.closeConnection(c);
@@ -154,18 +157,20 @@ public class AdminWebController implements WebMvcConfigurer {
             model.addAttribute("user", user);
             return "admin/edituser";
         } catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+            e.printStackTrace();
             return "redirect:/homepage";
-		}
+        }
     }
 
     @PostMapping("/admin/edituser")
-    public String adminEditProfilePost(@ModelAttribute("user") User user, @RequestParam(name = "reset-psw", defaultValue = "false") boolean resetPsw, BindingResult bindingResult, Model model) {
+    public String adminEditProfilePost(@ModelAttribute("user") User user,
+            @RequestParam(name = "reset-psw", defaultValue = "false") boolean resetPsw, BindingResult bindingResult,
+            Model model) {
         if (bindingResult.hasErrors()) {
             return "redirect:/error";
         }
         try {
-            //String fname, String lname, String username, String password, int id
+            // String fname, String lname, String username, String password, int id
             Connection c = DbUtility.createConnection();
             User dbUser = DbUtility.getUserDetails(user.getId());
             if (!user.getUsername().equals(dbUser.getUsername())) {
@@ -181,14 +186,17 @@ public class AdminWebController implements WebMvcConfigurer {
                 String newPsw = Generator.getRandomPassword();
                 String newCryptedPassword = CryptoPassword.cryptoPasswordwithSalt(newPsw, salt);
                 System.out.println(newPsw);
-                // metodo per inviare via mail la psw non cifrata all'utente Send.emailTo(user.getEmail(), newPsw);
-                UserService.updateExistingUser(user.getFname(), user.getLname(), user.getUsername(), newCryptedPassword, user.getId());
+                // metodo per inviare via mail la psw non cifrata all'utente
+                // Send.emailTo(user.getEmail(), newPsw);
+                UserService.updateExistingUser(user.getFname(), user.getLname(), user.getUsername(), newCryptedPassword,
+                        user.getId());
             } else {
-                UserService.updateExistingUser(user.getFname(), user.getLname(), user.getUsername(), dbUser.getPassword(), user.getId());
+                UserService.updateExistingUser(user.getFname(), user.getLname(), user.getUsername(),
+                        dbUser.getPassword(), user.getId());
             }
             DbUtility.closeConnection(c);
             return "redirect:/admin/dashboard";
-            
+
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             return "redirect:/error";

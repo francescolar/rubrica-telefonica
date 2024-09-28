@@ -17,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.lar.rubrica.module.User;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -34,11 +36,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    Dotenv dotenv = Dotenv.load();
+    String api_key = dotenv.get("API_KEY");
+
      @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/homepage", "/register", "/css/**", "/js/**", "/fragments/**", "/img/**", "/success").permitAll()
+                        .requestMatchers("/", "/homepage", "/register", "/css/**", "/js/**", "/fragments/**", "/img/**", "/success", "/api/contacts/key/" + api_key).permitAll()
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")
                         .requestMatchers("/superadmin/**").hasRole("SUPERADMIN")
                         .anyRequest().authenticated())

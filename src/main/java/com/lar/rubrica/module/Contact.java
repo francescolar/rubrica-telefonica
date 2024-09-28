@@ -175,7 +175,7 @@ public class Contact {
         this.ownerId = ownerId;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Contact{");
@@ -187,7 +187,7 @@ public class Contact {
         sb.append(", ownerId=").append(ownerId);
         sb.append('}');
         return sb.toString();
-    }
+    }*/
 
 
     /**
