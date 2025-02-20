@@ -1,0 +1,43 @@
+name: Deploy on Release
+
+on:
+ release:
+   types: [published]
+
+jobs:
+ deploy:
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v3
+     
+     - name: Get release tag
+       id: get_tag
+       run: echo "TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+     
+     - name: Set up SSH
+       uses: webfactory/ssh-agent@v0.8.0
+       with:
+         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+     
+     - name: Deploy
+       env:
+         DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+         TAG: ${{ steps.get_tag.outputs.TAG }}
+       run: |
+         if ! ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git fetch && git checkout $TAG && ./update.sh"; then
+           echo "::error::Deploy failed"
+           exit 1
+         fi
+
+     - name: Notify success
+       if: success()
+       run: |
+         curl -X POST ${{ secrets.SLACK_WEBHOOK }} -H 'Content-type: application/json' \
+         --data '{"text":"✅ Deploy succeeded for version ${{ steps.get_tag.outputs.TAG }}"}'
+
+     - name: Notify failure  
+       if: failure()
+       run: |
+         curl -X POST ${{ secrets.SLACK_WEBHOOK }} -H 'Content-type: application/json' \
+         --data '{"text":"❌ Deploy failed for version ${{ steps.get_tag.outputs.TAG }}"}'
