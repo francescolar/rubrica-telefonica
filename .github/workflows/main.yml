@@ -13,7 +13,6 @@ jobs:
          docker compose --env-file ./.env.testing -f ./tests/docker/docker-compose.test.yaml exec app php artisan test
 	 docker compose --env-file ./.env.testing -f ./tests/docker/docker-compose.test.yaml down
  deploy:
-   needs: test
    strategy:
      matrix:
        client: [TEST_SERVER]
