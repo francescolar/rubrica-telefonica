@@ -1,43 +1,55 @@
 name: Deploy on Release
-
 on:
  release:
    types: [published]
-
 jobs:
- deploy:
+ test:
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@v3
-     
+     - name: Run tests
+       run: |
+         docker compose --env-file ./.env.testing -f ./tests/docker/docker-compose.test.yaml up --build -d
+         docker compose --env-file ./.env.testing -f ./tests/docker/docker-compose.test.yaml exec app php artisan test
+	 docker compose --env-file ./.env.testing -f ./tests/docker/docker-compose.test.yaml down
+ deploy:
+   needs: test
+   strategy:
+     matrix:
+       client: [TEST_SERVER]
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v3
      - name: Get release tag
        id: get_tag
        run: echo "TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-     
      - name: Set up SSH
        uses: webfactory/ssh-agent@v0.8.0
        with:
-         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-     
+         ssh-private-key: ${{ secrets[format('{0}_SSH_KEY', matrix.client)] }}
      - name: Deploy
        env:
-         DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
-         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+         DEPLOY_SERVER: ${{ secrets[format('{0}_DEPLOY_SERVER', matrix.client)] }}
+         DEPLOY_PATH: ${{ secrets[format('{0}_DEPLOY_PATH', matrix.client)] }}
          TAG: ${{ steps.get_tag.outputs.TAG }}
        run: |
-         if ! ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git fetch && git checkout $TAG && ./update.sh"; then
-           echo "::error::Deploy failed"
+         OLD_TAG=$(ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git describe --tags")
+         if ! ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git fetch && git checkout $TAG && ./update.sh $TAG"; then
+           ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git checkout $OLD_TAG && ./update.sh $OLD_TAG"
+           echo "::error::Deploy failed for ${{ matrix.client }}, rolled back to $OLD_TAG"
            exit 1
          fi
-
-     - name: Notify success
-       if: success()
+     - name: Health Check
        run: |
-         curl -X POST ${{ secrets.SLACK_WEBHOOK }} -H 'Content-type: application/json' \
-         --data '{"text":"✅ Deploy succeeded for version ${{ steps.get_tag.outputs.TAG }}"}'
-
-     - name: Notify failure  
-       if: failure()
+         if ! ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && php artisan db:monitor"; then
+           echo "::error::Health check failed for ${{ matrix.client }}"
+           exit 1
+         fi
+     - name: Notify
+       if: always()
        run: |
-         curl -X POST ${{ secrets.SLACK_WEBHOOK }} -H 'Content-type: application/json' \
-         --data '{"text":"❌ Deploy failed for version ${{ steps.get_tag.outputs.TAG }}"}'
+         STATUS="${{ job.status }}"
+         EMOJI=$([[ "$STATUS" == "success" ]] && echo "✅" || echo "❌")
+         curl -X POST ${{ secrets[format('{0}_SLACK_WEBHOOK', matrix.client)] }} \
+         -H 'Content-type: application/json' \
+         --data "{\"text\":\"$EMOJI Deploy $STATUS for ${{ matrix.client }} version ${{ steps.get_tag.outputs.TAG }}\"}"
