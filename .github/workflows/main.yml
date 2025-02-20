@@ -32,9 +32,9 @@ jobs:
           DEPLOY_PATH: ${{ secrets[format('{0}_DEPLOY_PATH', matrix.client)] }}
           TAG: ${{ steps.get_tag.outputs.TAG }}
         run: |
-          OLD_TAG=$(ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git describe --tags")
-          if ! ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git fetch && git checkout $TAG && ./update.sh $TAG"; then
-            ssh $DEPLOY_SERVER "cd $DEPLOY_PATH && git checkout $OLD_TAG && ./update.sh $OLD_TAG"
+          OLD_TAG=$(ssh antonella@$DEPLOY_SERVER "cd $DEPLOY_PATH && git describe --tags")
+          if ! ssh antonella@$DEPLOY_SERVER "cd $DEPLOY_PATH && git fetch && git checkout $TAG && ./update.sh $TAG"; then
+            ssh antonella@$DEPLOY_SERVER "cd $DEPLOY_PATH && git checkout $OLD_TAG && ./update.sh $OLD_TAG"
             echo "::error::Deploy failed for ${{ matrix.client }}, rolled back to $OLD_TAG"
             exit 1
           fi
